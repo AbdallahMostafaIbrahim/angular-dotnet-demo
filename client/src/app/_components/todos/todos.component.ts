@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Todo } from '../lib/interfaces/todo';
 import * as uuid from 'uuid';
-import { TodoService } from '../todos.service';
+import { Todo } from '../../lib/interfaces/todo';
+import { TodoService } from '../../_services/todo/todos.service';
 
 @Component({
   selector: 'app-todos',
@@ -20,7 +20,9 @@ export class TodosComponent implements OnInit {
   }
 
   fetchTodos() {
-    this.todoProvider.getTodos().subscribe((res) => (this.todos = res));
+    this.todoProvider
+      .getTodos()
+      .subscribe((res) => (this.todos = res['todos']));
   }
 
   addTodo() {

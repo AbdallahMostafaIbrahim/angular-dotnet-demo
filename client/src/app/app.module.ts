@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { TodosComponent } from './todos/todos.component';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatIconModule } from '@angular/material/icon';
@@ -11,11 +10,13 @@ import { HomeComponent } from './home/home.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
-import { PostsComponent } from './posts/posts.component';
 import { httpInterceptorProviders } from './http-interceptors';
-import { LoginComponent } from './login/login.component';
-import { RegisterComponent } from './register/register.component';
-import { AuthService } from './auth.service';
+import { LoginComponent } from './_components/login/login.component';
+import { TodosComponent } from './_components/todos/todos.component';
+import { PostsComponent } from './_components/posts/posts.component';
+import { RegisterComponent } from './_components/register/register.component';
+import { AuthService } from './_services/auth/auth.service';
+import { LogoutComponent } from './_components/logout/logout.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { AuthService } from './auth.service';
     PostsComponent,
     LoginComponent,
     RegisterComponent,
+    LogoutComponent,
   ],
   imports: [
     BrowserModule,

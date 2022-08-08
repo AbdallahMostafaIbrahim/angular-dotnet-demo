@@ -5,12 +5,12 @@ using TodoApi.Models;
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
 public class AuthorizeAttribute : Attribute, IAuthorizationFilter
 {
-    public void OnAuthorization(AuthorizationFilterContext context)
+  public void OnAuthorization(AuthorizationFilterContext context)
+  {
+    var user = context.HttpContext.Items["User"];
+    if (user == null)
     {
-        var user = context.HttpContext.Items["User"];
-        if (user == null)
-        {
-            context.Result = new JsonResult(new { message = "Unauthorized", status = 401 });
-        }
+      context.Result = new JsonResult(new { message = "Unauthorized", status = 401 });
     }
+  }
 }

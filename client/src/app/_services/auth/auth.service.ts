@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { API_ENDPOINT } from './lib/interfaces/constants';
-import { NetworkResult } from './lib/interfaces/network';
-import { User } from './lib/interfaces/user';
+import { API_ENDPOINT } from '../../lib/interfaces/constants';
+import { NetworkResult } from '../../lib/interfaces/network';
+import { User } from '../../lib/interfaces/user';
 
 interface LoginParams {
   email: string;
@@ -22,15 +22,18 @@ export class AuthService {
   user?: User;
   token?: string;
 
-  constructor(private httpClient: HttpClient, private router: Router) {}
+  constructor(private httpClient: HttpClient, private router: Router) {
+    this.token = localStorage.getItem('token') || undefined;
+  }
 
   login(body: LoginParams) {
     this.httpClient
       .post<NetworkResult>(`${API_ENDPOINT}Auth/login`, body)
       .subscribe((result) => {
         if (result.status === 200) {
-          this.isUserLoggedIn = true;
+          this.token = result['token'];
           localStorage.setItem('token', result['token']);
+          this.isUserLoggedIn = true;
           this.router.navigate(['/todos']);
         }
       });
@@ -42,16 +45,22 @@ export class AuthService {
       .subscribe((result) => {
         if (result.status === 200) {
           this.isUserLoggedIn = true;
+          this.token = result['token'];
+          localStorage.setItem('token', result['token']);
+          this.router.navigate(['/todos']);
         }
-        localStorage.setItem('token', result['token']);
       });
   }
 
+  logout() {
+    console.log('logout');
+    localStorage.removeItem('token');
+    this.isUserLoggedIn = false;
+    this.token = undefined;
+    this.router.navigate(['/login']);
+  }
+
   me() {
-    this.httpClient
-      .get<NetworkResult>(`${API_ENDPOINT}Auth/me`)
-      .subscribe((result) => {
-        this.isUserLoggedIn = result.status === 200;
-      });
+    return this.httpClient.get<NetworkResult>(`${API_ENDPOINT}Auth/me`);
   }
 }
