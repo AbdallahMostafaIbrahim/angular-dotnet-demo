@@ -1,0 +1,35 @@
+<h1>Todos</h1>
+<mat-form-field class="example-form-field" appearance="fill">
+  <mat-label>Add Todo</mat-label>
+  <input
+    matInput
+    type="text"
+    [(ngModel)]="todoInput"
+    (keydown)="handleInputKeydown($event)"
+  />
+</mat-form-field>
+<button
+  (click)="addTodo()"
+  mat-icon-button
+  aria-label="Example icon button with a vertical three dot icon"
+>
+  <mat-icon>add</mat-icon>
+</button>
+<ul class="todos">
+  <mat-card *ngFor="let todo of todos.slice().reverse()" class="todo">
+    <mat-card-title class="card-title">
+      {{ todo.name }}
+      <mat-icon *ngIf="!todo.isComplete" class="grey-icon">close</mat-icon>
+      <mat-icon *ngIf="todo.isComplete" class="green-icon">check</mat-icon>
+    </mat-card-title>
+    <mat-card-subtitle>{{
+      todo.isComplete === true ? "Complete" : "Incomplete"
+    }}</mat-card-subtitle>
+    <mat-card-actions>
+      <button mat-button (click)="markComplete(todo.id)">
+        {{ todo.isComplete ? "Reset" : "Complete" }}
+      </button>
+      <button mat-button (click)="deleteTodo(todo.id)">Delete</button>
+    </mat-card-actions>
+  </mat-card>
+</ul>
