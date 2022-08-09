@@ -1,31 +1,20 @@
-using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using System.ComponentModel.DataAnnotations;
 
 namespace TodoApi.Models
 {
   public class User
   {
-    [Key]
-    public string? id { get; set; }
-    public string? username { get; set; }
-    public string? email { get; set; }
+    public int? Id { get; set; }
+    public string username { get; set; } = string.Empty;
+    public string email { get; set; } = string.Empty;
 
     [JsonIgnore]
-    public string? password { get; set; }
-  }
-  public class UserDBContext : DbContext
-  {
-    public UserDBContext(DbContextOptions<UserDBContext> options)
-        : base(options)
-    {
-    }
+    public string password { get; set; } = string.Empty;
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-      modelBuilder.Entity<User>().ToTable("User");
-    }
+    [JsonIgnore]
+    public ICollection<TodoItem> todos { get; set; } = new List<TodoItem>();
 
-    public DbSet<User> Users { get; set; } = null!;
   }
 }

@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using TodoApi.Services;
 using TodoApi.Models;
 
-namespace server.Controllers;
+namespace TodoApi.Controllers;
 
 public record SignInRequest(string email, string password);
 public record RegisterRequest(string username, string email, string password);
@@ -34,7 +34,12 @@ public class AuthController : ControllerBase
       email = body.email,
       password = body.password
     });
-    return Ok(new { status = 200, message = "User created successfully" });
+    if (user == null)
+    {
+      return Ok(new { status = 400, message = "Email Already Exists" });
+    }
+    var token = _jwtService.GenerateToken(user.Id.ToString()!);
+    return Ok(new { status = 200, token, message = "User created successfully" });
   }
 
   [HttpPost("login")]
@@ -43,7 +48,7 @@ public class AuthController : ControllerBase
     User? valid = _Authservice.Authenticate(body.email, body.password);
     if (valid != null)
     {
-      var token = _jwtService.GenerateToken(valid.id!);
+      var token = _jwtService.GenerateToken(valid.Id!.ToString()!);
       return Ok(new { token, status = 200 });
     }
     return Ok(new { message = "Invalid credentials", status = 400 });

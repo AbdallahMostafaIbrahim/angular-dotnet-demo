@@ -8,11 +8,11 @@ import { TodosComponent } from './_components/todos/todos.component';
 import { LogoutComponent } from './_components/logout/logout.component';
 
 const routes: Routes = [
-  { path: 'login', component: LoginComponent, canActivate: [AuthGuard] },
-  { path: 'logout', component: LogoutComponent, canActivate: [AuthGuard] },
-  { path: 'register', component: RegisterComponent },
   { path: '', component: HomeComponent, canActivate: [AuthGuard] },
   { path: 'todos', component: TodosComponent, canActivate: [AuthGuard] },
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
+  { path: '**', redirectTo: '' },
 ];
 
 @NgModule({

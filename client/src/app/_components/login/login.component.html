@@ -1,20 +1,38 @@
 <h1>Login</h1>
 
-<ng-form class="form-list">
+<form [formGroup]="loginForm" class="form-list">
   <mat-form-field appearance="fill">
     <mat-label>Email</mat-label>
-    <input matInput type="text" [(ngModel)]="creds.email" name="email" />
+    <input
+      matInput
+      type="text"
+      formControlName="email"
+      [ngClass]="{ 'is-invalid': submitted && f['email'].errors }"
+    />
+    <div *ngIf="submitted && f['email'].errors" class="invalid-feedback">
+      <div *ngIf="f['email'].errors['required']">Email is required</div>
+    </div>
   </mat-form-field>
   <mat-form-field appearance="fill">
     <mat-label>Password</mat-label>
     <input
       matInput
       type="password"
-      [(ngModel)]="creds.password"
-      name="password"
+      formControlName="password"
+      [ngClass]="{ 'is-invalid': submitted && f['password'].errors }"
     />
+    <div *ngIf="submitted && f['password'].errors" class="invalid-feedback">
+      <div *ngIf="f['password'].errors['required']">Password is required</div>
+    </div>
   </mat-form-field>
-  <button type="submit" mat-raised-button color="primary" (click)="submit()">
+  <button
+    [disabled]="loading"
+    type="submit"
+    mat-raised-button
+    color="primary"
+    (click)="submit()"
+  >
     Login
   </button>
-</ng-form>
+  <a routerLink="/register">Register</a>
+</form>

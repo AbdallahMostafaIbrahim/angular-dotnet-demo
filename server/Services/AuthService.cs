@@ -1,43 +1,49 @@
 using TodoApi.Models;
+using Isopoh.Cryptography.Argon2;
 
 namespace TodoApi.Services
 {
   public interface IAuthService
   {
     User? Authenticate(string email, string password);
-    bool Register(User user);
-    User? GetUser(string id);
+    User? Register(User user);
+    User? GetUser(int id);
 
   }
   public class AuthService : IAuthService
   {
-    private readonly UserDBContext _context;
+    private readonly TodoDBContext _context;
 
-    public AuthService(UserDBContext context)
+    public AuthService(TodoDBContext context)
     {
       _context = context;
     }
 
     public User? Authenticate(string email, string password)
     {
-      var user = _context.Users.FirstOrDefault(u => u.email == email && u.password == password);
-      return user;
+      var user = _context.Users.FirstOrDefault(u => u.email == email);
+      if(user != null && Argon2.Verify(user.password, password))
+      {
+        return user;
+      }
+      return null;
     }
 
-    public bool Register(User user)
+    public User? Register(User user)
     {
       var userExists = _context.Users.Where(u => u.email == user.email).ToList();
       if (userExists.Count > 0)
       {
-        return false;
+        return null;
       }
-      user.id = Guid.NewGuid().ToString();
+      user.password = Argon2.Hash(user.password);
+      Console.WriteLine(user.password);
       _context.Users.Add(user);
       _context.SaveChanges();
-      return true;
+      return user;
     }
 
-    public User? GetUser(string id)
+    public User? GetUser(int id)
     {
       var user = _context.Users.Find(id);
       return user;

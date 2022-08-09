@@ -3,8 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using TodoApi.Models;
 using TodoApi.Services;
 
-namespace server.Controllers
+namespace TodoApi.Controllers
 {
+  public record TodoInput(string name, bool isComplete);
+
   [Route("api/todos")]
   [Authorize]
   [ApiController]
@@ -26,49 +28,34 @@ namespace server.Controllers
 
     // GET: api/TodoItems/5
     [HttpGet("{id}")]
-    public ActionResult GetTodoItem(string id)
+    public ActionResult GetTodoItem(int id)
     {
       return Ok(new { status = 200, todo = _service.GetTodo(id) });
     }
 
     [HttpPost("toggle/{id}")]
-    public IActionResult ToggleTodo(string id)
+    public IActionResult ToggleTodo(int id)
     {
       _service.ToggleTodo(id);
       return Ok(new { status = 200 });
     }
 
     [HttpPost]
-    public ActionResult<TodoItem> PostTodoItem(TodoItem todoItem)
+    public ActionResult<TodoItem> PostTodoItem(TodoInput todoItem)
     {
-      try
-      {
-        _service.AddTodo(todoItem);
-      }
-      catch (DbUpdateException)
-      {
-        if (TodoItemExists(todoItem.id!))
-        {
-          return Conflict();
-        }
-        else
-        {
-          throw;
-        }
-      }
-
+      _service.AddTodo(todoItem);
       return Ok(new { status = 200, todo = todoItem });
     }
 
     // DELETE: api/TodoItems/5
     [HttpDelete("{id}")]
-    public IActionResult DeleteTodoItem(string id)
+    public IActionResult DeleteTodoItem(int id)
     {
       _service.DeleteTodo(id);
       return NoContent();
     }
 
-    private bool TodoItemExists(string id)
+    private bool TodoItemExists(int id)
     {
       if (_service.GetTodo(id) == null)
         return false;

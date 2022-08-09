@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatIconModule } from '@angular/material/icon';
 import { HttpClientModule } from '@angular/common/http';
@@ -17,6 +17,7 @@ import { PostsComponent } from './_components/posts/posts.component';
 import { RegisterComponent } from './_components/register/register.component';
 import { AuthService } from './_services/auth/auth.service';
 import { LogoutComponent } from './_components/logout/logout.component';
+import { AlertComponent } from './_components/alert/alert.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { LogoutComponent } from './_components/logout/logout.component';
     LoginComponent,
     RegisterComponent,
     LogoutComponent,
+    AlertComponent,
   ],
   imports: [
     BrowserModule,
@@ -38,6 +40,7 @@ import { LogoutComponent } from './_components/logout/logout.component';
     MatButtonModule,
     MatInputModule,
     MatCardModule,
+    ReactiveFormsModule,
   ],
   providers: [httpInterceptorProviders, AuthService],
   bootstrap: [AppComponent],

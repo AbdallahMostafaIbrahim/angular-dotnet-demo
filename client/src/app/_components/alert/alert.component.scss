@@ -1,0 +1,17 @@
+.alert {
+  display: flex;
+  padding: 10px;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  box-shadow: 0 0 4px rgba($color: #000000, $alpha: 0.3);
+  color: white;
+}
+
+.alert-success {
+  background-color: rgb(7, 163, 7);
+}
+
+.alert-danger {
+  background-color: rgb(163, 7, 7);
+}

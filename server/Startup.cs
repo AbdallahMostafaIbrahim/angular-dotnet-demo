@@ -5,6 +5,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc.Formatters;
+
 
 namespace TodoApi
 {
@@ -22,13 +26,20 @@ namespace TodoApi
     // add services to the DI container
     public void ConfigureServices(IServiceCollection services)
     {
+      services.AddControllers(options =>
+      {
+          options.OutputFormatters.RemoveType<SystemTextJsonOutputFormatter>();
+          options.OutputFormatters.Add(new SystemTextJsonOutputFormatter(new JsonSerializerOptions(JsonSerializerDefaults.Web)
+          {
+              ReferenceHandler = ReferenceHandler.Preserve,
+          }));
+      });
       services.AddHttpContextAccessor();
       services.AddDbContext<TodoDBContext>(opt =>
                       opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
               );
-      services.AddDbContext<UserDBContext>(opt =>
-                      opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
-              );
+
+      
 
       services.AddScoped<ITodoService, TodoService>();
       services.AddScoped<IAuthService, AuthService>();

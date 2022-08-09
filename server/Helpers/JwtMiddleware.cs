@@ -45,7 +45,7 @@ namespace TodoApi.Helpers
         var jwtToken = (JwtSecurityToken)validatedToken;
         var userId = jwtToken.Claims.First(x => x.Type == "id").Value;
 
-        context.Items["User"] = authService.GetUser(userId);
+        context.Items["User"] = authService.GetUser(int.Parse(userId));
       }
       catch
       {
