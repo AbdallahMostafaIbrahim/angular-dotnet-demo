@@ -10,6 +10,7 @@ import { HomeComponent } from './_components/home/home.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { httpInterceptorProviders } from './_helpers/interceptors';
 import { LoginComponent } from './_components/login/login.component';
 import { TodosComponent } from './_components/todos/todos.component';
@@ -37,6 +38,7 @@ import { AuthService } from './_services/auth/auth.service';
     MatButtonModule,
     MatInputModule,
     MatCardModule,
+    MatProgressSpinnerModule,
   ],
   providers: [httpInterceptorProviders, AuthService],
   bootstrap: [AppComponent],

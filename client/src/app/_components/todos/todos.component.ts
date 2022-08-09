@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import * as uuid from 'uuid';
 import { Todo, TodoInput } from '../../_models/todo';
 import { TodoService } from '../../_services/todo/todos.service';
 
@@ -10,7 +9,7 @@ import { TodoService } from '../../_services/todo/todos.service';
 })
 export class TodosComponent implements OnInit {
   todos: Todo[] = [];
-
+  loading: boolean = true;
   todoInput: string = '';
 
   constructor(private todoProvider: TodoService) {}
@@ -20,7 +19,10 @@ export class TodosComponent implements OnInit {
   }
 
   fetchTodos() {
-    this.todoProvider.getTodos().subscribe((res) => (this.todos = res.todos));
+    this.todoProvider.getTodos().subscribe((res) => {
+      this.todos = res.todos;
+      this.loading = false;
+    });
   }
 
   addTodo() {

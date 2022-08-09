@@ -39,7 +39,7 @@ public class AuthController : ControllerBase
       return BadRequest(new { status = 400, message = "Email Already Exists" });
     }
     var token = _jwtService.GenerateToken(user.Id.ToString()!);
-    return Ok(new { status = 200, token, message = "User created successfully" });
+    return Ok(new { status = 200, token, user, message = "User created successfully" });
   }
 
   [HttpPost("login")]
@@ -49,7 +49,7 @@ public class AuthController : ControllerBase
     if (valid != null)
     {
       var token = _jwtService.GenerateToken(valid.Id!.ToString()!);
-      return Ok(new { token, status = 200 });
+      return Ok(new { token, user = valid, status = 200 });
     }
     return BadRequest(new { message = "Invalid credentials", status = 400 });
   }

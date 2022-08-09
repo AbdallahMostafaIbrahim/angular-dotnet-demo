@@ -16,9 +16,11 @@ export class AuthService {
 
   constructor(private httpClient: HttpClient, private router: Router) {
     const value = JSON.parse(localStorage.getItem('currentUser') || '{}');
+
     this.currentUserSubject = new BehaviorSubject<User | undefined>(
       Object.keys(value).length === 0 ? undefined : value
     );
+
     this.currentUser = this.currentUserSubject.asObservable();
   }
 
@@ -29,7 +31,10 @@ export class AuthService {
   login(body: LoginInput) {
     return this.httpClient.post<any>(`${API_ENDPOINT}Auth/login`, body).pipe(
       map((user) => {
-        localStorage.setItem('currentUser', JSON.stringify(user));
+        localStorage.setItem(
+          'currentUser',
+          JSON.stringify({ token: user.token, ...user.user })
+        );
         this.currentUserSubject.next(user);
         return user;
       })

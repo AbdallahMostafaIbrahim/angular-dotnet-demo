@@ -5,9 +5,9 @@ namespace TodoApi.Services
 {
   public interface ITodoService
   {
-    List<TodoItem> GetTodos();
-    TodoItem GetTodo(int id);
-    TodoItem? AddTodo(TodoInput todo);
+    List<Todo> GetTodos();
+    Todo GetTodo(int id);
+    Todo? AddTodo(TodoInput todo);
     void DeleteTodo(int id);
     void ToggleTodo(int id);
 
@@ -24,13 +24,13 @@ namespace TodoApi.Services
       _httpContextAccessor = httpContextAccessor;
     }
 
-    public List<TodoItem> GetTodos()
+    public List<Todo> GetTodos()
     {
       var user = ((User)_httpContextAccessor.HttpContext?.Items?["User"]!)!;
-      var todos = _context.TodoItems.Where(t => t.userId == user.Id).Select(t => new TodoItem { Id = t.Id, name = t.name, isComplete = t.isComplete }).ToList();
+      var todos = _context.TodoItems.Where(t => t.userId == user.Id).Select(t => new Todo { Id = t.Id, name = t.name, isComplete = t.isComplete }).ToList();
       return todos;
     }
-    public TodoItem GetTodo(int id)
+    public Todo GetTodo(int id)
     {
       var user = ((User)_httpContextAccessor.HttpContext?.Items?["User"]!)!;
       var todo = _context.TodoItems.Find(id);
@@ -41,9 +41,9 @@ namespace TodoApi.Services
       return todo;
     }
 
-    public TodoItem? AddTodo(TodoInput todo)
+    public Todo? AddTodo(TodoInput todo)
     {
-      var newTodo = new TodoItem();
+      var newTodo = new Todo();
       newTodo.name = todo.name;
       newTodo.isComplete = todo.isComplete;
       newTodo.userId = ((User)_httpContextAccessor.HttpContext?.Items?["User"]!).Id!;

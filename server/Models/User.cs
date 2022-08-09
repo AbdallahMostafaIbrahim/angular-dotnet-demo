@@ -14,7 +14,7 @@ namespace TodoApi.Models
     public string password { get; set; } = string.Empty;
 
     [JsonIgnore]
-    public ICollection<TodoItem> todos { get; set; } = new List<TodoItem>();
+    public ICollection<Todo> todos { get; set; } = new List<Todo>();
 
   }
 }

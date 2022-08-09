@@ -41,7 +41,7 @@ namespace TodoApi.Controllers
     }
 
     [HttpPost]
-    public ActionResult<TodoItem> PostTodoItem(TodoInput todoItem)
+    public ActionResult<Todo> PostTodoItem(TodoInput todoItem)
     {
       var newTodo = _service.AddTodo(todoItem);
       return Ok(new { status = 200, todo = newTodo });

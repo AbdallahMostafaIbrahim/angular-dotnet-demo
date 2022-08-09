@@ -15,6 +15,7 @@
 >
   <mat-icon>add</mat-icon>
 </button>
+<mat-spinner *ngIf="loading"></mat-spinner>
 <ul class="todos">
   <mat-card *ngFor="let todo of todos.slice().reverse()" class="todo">
     <mat-card-title class="card-title">
