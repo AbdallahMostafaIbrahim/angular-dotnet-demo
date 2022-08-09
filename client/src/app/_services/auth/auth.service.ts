@@ -57,6 +57,23 @@ export class AuthService {
   }
 
   me() {
-    return this.httpClient.get(`${API_ENDPOINT}Auth/me`);
+    return this.httpClient.get<{ status: number; user?: User }>(
+      `${API_ENDPOINT}Auth/me`
+    );
+  }
+
+  refreshUser() {
+    this.me().subscribe((res) => {
+      if (res.status === 200) {
+        if (!this.currentUserValue) {
+          return;
+        }
+        const newUser = { ...this.currentUserValue, ...res.user };
+        localStorage.setItem('currentUser', JSON.stringify(newUser));
+        this.currentUserSubject.next(newUser);
+      } else {
+        this.logout();
+      }
+    });
   }
 }
