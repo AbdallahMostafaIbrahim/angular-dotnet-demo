@@ -43,8 +43,8 @@ namespace TodoApi.Controllers
     [HttpPost]
     public ActionResult<TodoItem> PostTodoItem(TodoInput todoItem)
     {
-      _service.AddTodo(todoItem);
-      return Ok(new { status = 200, todo = todoItem });
+      var newTodo = _service.AddTodo(todoItem);
+      return Ok(new { status = 200, todo = newTodo });
     }
 
     // DELETE: api/TodoItems/5

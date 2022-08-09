@@ -5,9 +5,9 @@ namespace TodoApi.Services
 {
   public interface ITodoService
   {
-    TodoItem[] GetTodos();
+    List<TodoItem> GetTodos();
     TodoItem GetTodo(int id);
-    void AddTodo(TodoInput todo);
+    TodoItem? AddTodo(TodoInput todo);
     void DeleteTodo(int id);
     void ToggleTodo(int id);
 
@@ -24,10 +24,10 @@ namespace TodoApi.Services
       _httpContextAccessor = httpContextAccessor;
     }
 
-    public TodoItem[] GetTodos()
+    public List<TodoItem> GetTodos()
     {
       var user = ((User)_httpContextAccessor.HttpContext?.Items?["User"]!)!;
-      var todos = _context.TodoItems.Where(t => t.userId == user.Id).ToArray();
+      var todos = _context.TodoItems.Where(t => t.userId == user.Id).Select(t => new TodoItem { Id = t.Id, name = t.name, isComplete = t.isComplete }).ToList();
       return todos;
     }
     public TodoItem GetTodo(int id)
@@ -41,7 +41,7 @@ namespace TodoApi.Services
       return todo;
     }
 
-    public void AddTodo(TodoInput todo)
+    public TodoItem? AddTodo(TodoInput todo)
     {
       var newTodo = new TodoItem();
       newTodo.name = todo.name;
@@ -49,6 +49,7 @@ namespace TodoApi.Services
       newTodo.userId = ((User)_httpContextAccessor.HttpContext?.Items?["User"]!).Id!;
       _context.TodoItems.Add(newTodo);
       _context.SaveChanges();
+      return newTodo;
     }
 
     public void DeleteTodo(int id)

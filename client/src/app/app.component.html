@@ -1,9 +1,9 @@
-<nav *ngIf="currentUser">
+<nav>
   <a routerLink="/">Home</a>
   <a routerLink="/todos">Todos</a>
-  <a (click)="(logout)">Logout</a>
+  <a (click)="logout()" *ngIf="currentUser">Logout</a>
+  <a routerLink="/login" *ngIf="!currentUser">Login</a>
 </nav>
 <div class="spacing">
-  <alert></alert>
   <router-outlet></router-outlet>
 </div>

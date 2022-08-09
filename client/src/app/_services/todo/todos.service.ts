@@ -1,8 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { API_ENDPOINT } from '../../lib/interfaces/constants';
-import { NetworkResult } from '../../lib/interfaces/network';
-import { Todo } from '../../lib/interfaces/todo';
+import { API_ENDPOINT } from '../../_models/constants';
+import { Todo, TodoInput } from '../../_models/todo';
 
 @Injectable({
   providedIn: 'root',
@@ -11,18 +10,18 @@ export class TodoService {
   constructor(private httpClient: HttpClient) {}
 
   public getTodos() {
-    return this.httpClient.get<NetworkResult>(`${API_ENDPOINT}todos`);
+    return this.httpClient.get<any>(`${API_ENDPOINT}todos`);
   }
 
-  public addTodo(todo: Todo) {
-    return this.httpClient.post(`${API_ENDPOINT}todos`, todo);
+  public addTodo(todo: TodoInput) {
+    return this.httpClient.post<{ todo: Todo }>(`${API_ENDPOINT}todos`, todo);
   }
 
-  public removeTodo(id: string) {
+  public removeTodo(id: number) {
     return this.httpClient.delete(`${API_ENDPOINT}todos/${id}`);
   }
 
-  public markCompleted(id: string) {
+  public markCompleted(id: number) {
     return this.httpClient.post(`${API_ENDPOINT}todos/toggle/${id}/`, {});
   }
 }

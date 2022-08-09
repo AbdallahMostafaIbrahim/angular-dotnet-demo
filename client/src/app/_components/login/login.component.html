@@ -1,33 +1,26 @@
-<h1>Login</h1>
+<h1 class="title">Login</h1>
 
-<form [formGroup]="loginForm" class="form-list">
-  <mat-form-field appearance="fill">
+<form class="form">
+  <mat-form-field class="input" appearance="fill">
     <mat-label>Email</mat-label>
-    <input
-      matInput
-      type="text"
-      formControlName="email"
-      [ngClass]="{ 'is-invalid': submitted && f['email'].errors }"
-    />
-    <div *ngIf="submitted && f['email'].errors" class="invalid-feedback">
-      <div *ngIf="f['email'].errors['required']">Email is required</div>
-    </div>
+    <input matInput type="text" [(ngModel)]="loginData.email" name="email" />
   </mat-form-field>
-  <mat-form-field appearance="fill">
+  <mat-form-field class="input" appearance="fill">
     <mat-label>Password</mat-label>
     <input
       matInput
       type="password"
-      formControlName="password"
-      [ngClass]="{ 'is-invalid': submitted && f['password'].errors }"
+      [(ngModel)]="loginData.password"
+      name="password"
     />
-    <div *ngIf="submitted && f['password'].errors" class="invalid-feedback">
-      <div *ngIf="f['password'].errors['required']">Password is required</div>
-    </div>
   </mat-form-field>
+  <div *ngIf="err" class="error">
+    <mat-icon>error</mat-icon>
+    <span>{{ err }}</span>
+  </div>
   <button
-    [disabled]="loading"
     type="submit"
+    [disabled]="loading"
     mat-raised-button
     color="primary"
     (click)="submit()"

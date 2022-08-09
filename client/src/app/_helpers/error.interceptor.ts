@@ -22,6 +22,7 @@ export class ErrorInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       map((value) => {
         if (value instanceof HttpResponse) {
+          if (!value.body) return value;
           if (value.body.status === 200) return value;
           else if (value.body.status === 401) {
             this.auth.logout();

@@ -2,18 +2,9 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, map, Observable } from 'rxjs';
-import { API_ENDPOINT } from '../../lib/interfaces/constants';
-import { NetworkResult } from '../../lib/interfaces/network';
-import { User } from '../../lib/interfaces/user';
-
-interface LoginParams {
-  email: string;
-  password: string;
-}
-
-interface RegisterParams extends LoginParams {
-  username: string;
-}
+import { LoginInput, RegisterInput } from '../../_models/AuthInput';
+import { API_ENDPOINT } from '../../_models/constants';
+import { User } from '../../_models/user';
 
 @Injectable({
   providedIn: 'root',
@@ -35,7 +26,7 @@ export class AuthService {
     return this.currentUserSubject.value;
   }
 
-  login(body: LoginParams) {
+  login(body: LoginInput) {
     return this.httpClient.post<any>(`${API_ENDPOINT}Auth/login`, body).pipe(
       map((user) => {
         localStorage.setItem('currentUser', JSON.stringify(user));
@@ -45,7 +36,7 @@ export class AuthService {
     );
   }
 
-  register(body: RegisterParams) {
+  register(body: RegisterInput) {
     return this.httpClient.post<any>(`${API_ENDPOINT}Auth/register`, body).pipe(
       map((user) => {
         localStorage.setItem('currentUser', JSON.stringify(user));
@@ -61,6 +52,6 @@ export class AuthService {
   }
 
   me() {
-    return this.httpClient.get<NetworkResult>(`${API_ENDPOINT}Auth/me`);
+    return this.httpClient.get(`${API_ENDPOINT}Auth/me`);
   }
 }

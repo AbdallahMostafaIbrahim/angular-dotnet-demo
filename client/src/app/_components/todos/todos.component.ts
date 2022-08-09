@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import * as uuid from 'uuid';
-import { Todo } from '../../lib/interfaces/todo';
+import { Todo, TodoInput } from '../../_models/todo';
 import { TodoService } from '../../_services/todo/todos.service';
 
 @Component({
@@ -20,35 +20,31 @@ export class TodosComponent implements OnInit {
   }
 
   fetchTodos() {
-    this.todoProvider
-      .getTodos()
-      .subscribe((res) => (this.todos = res['todos']));
+    this.todoProvider.getTodos().subscribe((res) => (this.todos = res.todos));
   }
 
   addTodo() {
-    const todo: Todo = {
-      id: uuid.v4(),
+    const todo: TodoInput = {
       name: this.todoInput,
       isComplete: false,
     };
-    this.todos.push(todo);
     this.todoProvider.addTodo(todo).subscribe((d) => {
-      console.log(d);
+      this.todos.push(d.todo);
     });
   }
 
-  deleteTodo(id: string) {
+  deleteTodo(id: number) {
     this.todoProvider.removeTodo(id).subscribe((d) => {
-      console.log(d);
+      this.todos = this.todos.filter((todo) => todo.id !== id);
     });
-    this.todos = this.todos.filter((todo) => todo.id !== id);
   }
 
-  markComplete(id: string) {
-    this.todos = this.todos.map((todo) =>
-      todo.id === id ? { ...todo, isComplete: !todo.isComplete } : todo
-    );
-    this.todoProvider.markCompleted(id).subscribe(() => console.log('toggle'));
+  markComplete(id: number) {
+    this.todoProvider.markCompleted(id).subscribe(() => {
+      this.todos = this.todos.map((todo) =>
+        todo.id === id ? { ...todo, isComplete: !todo.isComplete } : todo
+      );
+    });
   }
 
   handleInputKeydown(e: KeyboardEvent) {

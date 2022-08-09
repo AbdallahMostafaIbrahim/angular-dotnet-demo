@@ -1,25 +1,45 @@
-<h1>Register</h1>
+<h1 class="title">Register</h1>
 
-<ng-form class="form-list">
-  <mat-form-field appearance="fill">
+<form class="form">
+  <mat-form-field class="input" appearance="fill">
     <mat-label>Username</mat-label>
-    <input matInput type="text" [(ngModel)]="creds.username" name="username" />
+    <input
+      matInput
+      type="text"
+      [(ngModel)]="registerData.username"
+      name="username"
+    />
   </mat-form-field>
-  <mat-form-field appearance="fill">
+  <mat-form-field class="input" appearance="fill">
     <mat-label>Email</mat-label>
-    <input matInput type="text" [(ngModel)]="creds.email" name="email" />
+    <input
+      matInput
+      type="email"
+      [(ngModel)]="registerData.email"
+      name="email"
+    />
   </mat-form-field>
-  <mat-form-field appearance="fill">
+  <mat-form-field class="input" appearance="fill">
     <mat-label>Password</mat-label>
     <input
       matInput
       type="password"
-      [(ngModel)]="creds.password"
+      [(ngModel)]="registerData.password"
       name="password"
     />
   </mat-form-field>
-  <a routerLink="/login">Or Login?</a>
-  <button type="submit" mat-raised-button color="primary" (click)="submit()">
+  <div *ngIf="err" class="error">
+    <mat-icon>error</mat-icon>
+    <span>{{ err }}</span>
+  </div>
+  <button
+    type="submit"
+    mat-raised-button
+    color="primary"
+    [disabled]="loading"
+    (click)="submit()"
+  >
     Register
   </button>
-</ng-form>
+  <a routerLink="/login">Or Login?</a>
+</form>

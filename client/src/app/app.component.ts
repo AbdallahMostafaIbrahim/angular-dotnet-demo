@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { User } from './lib/interfaces/user';
+import { User } from './_models/user';
 import { AuthService } from './_services/auth/auth.service';
 
 @Component({
@@ -9,7 +9,6 @@ import { AuthService } from './_services/auth/auth.service';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  title = 'Application';
   currentUser?: User;
 
   constructor(private router: Router, private authService: AuthService) {
