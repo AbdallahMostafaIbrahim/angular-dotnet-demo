@@ -35,7 +35,7 @@ export class AuthService {
           'currentUser',
           JSON.stringify({ token: user.token, ...user.user })
         );
-        this.currentUserSubject.next(user);
+        this.currentUserSubject.next({ token: user.token, ...user.user });
         return user;
       })
     );
@@ -45,7 +45,7 @@ export class AuthService {
     return this.httpClient.post<any>(`${API_ENDPOINT}Auth/register`, body).pipe(
       map((user) => {
         localStorage.setItem('currentUser', JSON.stringify(user));
-        this.currentUserSubject.next(user);
+        this.currentUserSubject.next({ token: user.token, ...user.user });
         return user;
       })
     );
