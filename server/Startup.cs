@@ -5,14 +5,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Mvc.Formatters;
 
 
 namespace TodoApi
 {
-  public class Startup
+    public class Startup
   {
     public IConfiguration Configuration { get; }
     private static string MyAllowSpecificOrigins = "devOrigins";
@@ -70,7 +67,6 @@ namespace TodoApi
 
       services.AddControllers();
       services.AddEndpointsApiExplorer();
-      services.AddSwaggerGen();
     }
 
     // configure the HTTP request pipeline
@@ -81,8 +77,6 @@ namespace TodoApi
       );
 
       app.UseRouting();
-      app.UseSwagger();
-      app.UseSwaggerUI();
 
       // custom jwt auth middleware
       app.UseMiddleware<JwtMiddleware>();

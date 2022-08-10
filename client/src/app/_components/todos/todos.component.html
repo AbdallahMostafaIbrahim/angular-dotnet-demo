@@ -20,8 +20,10 @@
   <mat-card *ngFor="let todo of todos.slice().reverse()" class="todo">
     <mat-card-title class="card-title">
       {{ todo.name }}
-      <mat-icon *ngIf="!todo.isComplete" class="grey-icon">close</mat-icon>
-      <mat-icon *ngIf="todo.isComplete" class="green-icon">check</mat-icon>
+      <mat-icon *ngIf="!todo.isComplete" class="red-icon">close</mat-icon>
+      <mat-icon *ngIf="todo.isComplete" class="green-icon"
+        >check_circle</mat-icon
+      >
     </mat-card-title>
     <mat-card-subtitle>{{
       todo.isComplete === true ? "Complete" : "Incomplete"
