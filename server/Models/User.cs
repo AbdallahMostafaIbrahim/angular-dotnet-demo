@@ -4,17 +4,17 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TodoApi.Models
 {
-  public class User
-  {
-    public int? Id { get; set; }
-    public string username { get; set; } = string.Empty;
-    public string email { get; set; } = string.Empty;
+    public class User
+    {
+        public int Id { get; set; }
+        public string username { get; set; } = string.Empty;
+        public string email { get; set; } = string.Empty;
 
-    [JsonIgnore]
-    public string password { get; set; } = string.Empty;
+        [JsonIgnore]
+        public string password { get; set; } = string.Empty;
 
-    [JsonIgnore]
-    public ICollection<Todo> todos { get; set; } = new List<Todo>();
+        [JsonIgnore]
+        public ICollection<Todo> todos { get; set; } = new List<Todo>();
 
-  }
+    }
 }

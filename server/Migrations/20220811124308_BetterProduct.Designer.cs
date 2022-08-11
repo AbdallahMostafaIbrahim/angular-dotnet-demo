@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TodoApi.Models;
 
@@ -11,9 +12,10 @@ using TodoApi.Models;
 namespace server.Migrations
 {
     [DbContext(typeof(TodoDBContext))]
-    partial class TodoDBContextModelSnapshot : ModelSnapshot
+    [Migration("20220811124308_BetterProduct")]
+    partial class BetterProduct
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -128,9 +130,6 @@ namespace server.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int?>("imageId")
-                        .HasColumnType("int");
-
                     b.Property<string>("name")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -142,8 +141,6 @@ namespace server.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("categoryId");
-
-                    b.HasIndex("imageId");
 
                     b.ToTable("Products");
                 });
@@ -239,13 +236,7 @@ namespace server.Migrations
                         .WithMany("Products")
                         .HasForeignKey("categoryId");
 
-                    b.HasOne("TodoApi.Models.Image", "Image")
-                        .WithMany()
-                        .HasForeignKey("imageId");
-
                     b.Navigation("Category");
-
-                    b.Navigation("Image");
                 });
 
             modelBuilder.Entity("TodoApi.Models.Todo", b =>

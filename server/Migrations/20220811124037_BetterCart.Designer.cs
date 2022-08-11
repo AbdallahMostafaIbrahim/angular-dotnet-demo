@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TodoApi.Models;
 
@@ -11,9 +12,10 @@ using TodoApi.Models;
 namespace server.Migrations
 {
     [DbContext(typeof(TodoDBContext))]
-    partial class TodoDBContextModelSnapshot : ModelSnapshot
+    [Migration("20220811124037_BetterCart")]
+    partial class BetterCart
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,7 +54,6 @@ namespace server.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("Id"), 1L, 1);
 
                     b.Property<int?>("cartId")
-                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<int?>("productId")
@@ -128,9 +129,6 @@ namespace server.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int?>("imageId")
-                        .HasColumnType("int");
-
                     b.Property<string>("name")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -142,8 +140,6 @@ namespace server.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("categoryId");
-
-                    b.HasIndex("imageId");
 
                     b.ToTable("Products");
                 });
@@ -211,9 +207,7 @@ namespace server.Migrations
                 {
                     b.HasOne("TodoApi.Models.Cart", "Cart")
                         .WithMany("CartItems")
-                        .HasForeignKey("cartId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("cartId");
 
                     b.HasOne("TodoApi.Models.Product", "Product")
                         .WithMany()
@@ -235,17 +229,11 @@ namespace server.Migrations
 
             modelBuilder.Entity("TodoApi.Models.Product", b =>
                 {
-                    b.HasOne("TodoApi.Models.Category", "Category")
+                    b.HasOne("TodoApi.Models.Category", "category")
                         .WithMany("Products")
                         .HasForeignKey("categoryId");
 
-                    b.HasOne("TodoApi.Models.Image", "Image")
-                        .WithMany()
-                        .HasForeignKey("imageId");
-
-                    b.Navigation("Category");
-
-                    b.Navigation("Image");
+                    b.Navigation("category");
                 });
 
             modelBuilder.Entity("TodoApi.Models.Todo", b =>
