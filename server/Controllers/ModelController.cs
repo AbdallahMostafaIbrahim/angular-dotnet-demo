@@ -12,33 +12,32 @@ public record ModelInput(List<string> models);
 [Route("api/[controller]")]
 public class ModelController : ControllerBase
 {
-  private readonly IModelService _service;
+    private readonly IModelService _service;
 
-  public ModelController(IModelService service)
-  {
-    _service = service;
-  }
-
-  [HttpGet]
-  public IActionResult GetModels()
-  {
-    return Ok(new { models = _service.GetModels() });
-  }
-
-  [HttpGet("fields/{model}")]
-  public IActionResult GetAll(string model)
-  {
-    try
+    public ModelController(IModelService service)
     {
-      var fields = _service.GetModelMetadata(model);
-
-      return Ok(new { fields });
-    }
-    catch (Exception e)
-    {
-      Console.WriteLine(e);
-      return BadRequest(new { message = e.Message });
+        _service = service;
     }
 
-  }
+    [HttpGet]
+    public IActionResult GetModels()
+    {
+        return Ok(new { models = _service.GetModels() });
+    }
+
+    [HttpGet("fields/{model}")]
+    public IActionResult GetAll(string model)
+    {
+        try
+        {
+            var fields = _service.GetAllRelatedModelsMetadata(model);
+            return Ok(new { fields });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return BadRequest(new { message = e.Message });
+        }
+
+    }
 }

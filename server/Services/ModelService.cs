@@ -31,9 +31,8 @@ namespace TodoApi.Services
     public interface IModelService
     {
         List<string> GetModels();
-        ModelMetadata GetFields(IEntityType model);
-        List<ModelMetadata> GetModelMetadata(string model);
-
+        ModelMetadata GetModelMetadata(IEntityType model);
+        List<ModelMetadata> GetAllRelatedModelsMetadata(string model);
         string ParseType(string type);
 
     }
@@ -101,7 +100,7 @@ namespace TodoApi.Services
         }
 
         // Fetches Fields for the given model and all related models
-        public List<ModelMetadata> GetModelMetadata(string model)
+        public List<ModelMetadata> GetAllRelatedModelsMetadata(string model)
         {
             if (!model.StartsWith(_modelsNamespace)) model = _modelsNamespace + "." + model;
             var type = _context.Model.FindEntityType(model);
@@ -116,14 +115,14 @@ namespace TodoApi.Services
 
             foreach (var navigation in navigations)
             {
-                var metdata = GetFields(_context.Model.FindEntityType(_modelsNamespace + "." + navigation)!);
+                var metdata = GetModelMetadata(_context.Model.FindEntityType(_modelsNamespace + "." + navigation)!);
                 result.Add(metdata);
             }
 
             return result;
         }
 
-        public ModelMetadata GetFields(IEntityType model)
+        public ModelMetadata GetModelMetadata(IEntityType model)
         {
             List<Field> fields = new List<Field>();
 
