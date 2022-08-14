@@ -1,24 +1,34 @@
 using TodoApi.Models;
 using Microsoft.EntityFrameworkCore.Metadata;
 using System.Collections;
+using System.Linq.Dynamic.Core;
+using TodoApi.Helpers;
+using System.Reflection;
+using System.Text;
 using Newtonsoft.Json;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace TodoApi.Services
 {
+    public class Data
+    {
+        public List<object> data { get; set; } = new List<object>();
+        public int count { get; set; }
+    }
     public class Field
     {
         public string name { get; set; } = string.Empty;
+        public string? displayName { get; set; }
         public string type { get; set; } = string.Empty;
+        public bool? nullable { get; set; }
         public string? foreignModel { get; set; }
     }
-
     public class Navigation
     {
         public string name { get; set; } = string.Empty;
         public string reference { get; set; } = string.Empty;
     }
-
     public class ModelMetadata
     {
         public string name { get; set; } = string.Empty;
@@ -31,10 +41,8 @@ namespace TodoApi.Services
     public interface IModelService
     {
         List<string> GetModels();
-        ModelMetadata GetModelMetadata(IEntityType model);
         List<ModelMetadata> GetAllRelatedModelsMetadata(string model);
-        string ParseType(string type);
-
+        Data GetData(string model, string? where = null, string? whereParams = null, string? includes = null, int take = 0, int skip = 0, string? orderBy = null);
     }
     public class ModelService : IModelService
     {
@@ -63,6 +71,7 @@ namespace TodoApi.Services
             _context = context;
         }
 
+        // Lists All Distinct models
         public List<string> GetModels()
         {
             return _context.Model.GetEntityTypes()
@@ -71,7 +80,8 @@ namespace TodoApi.Services
             .ToList();
         }
 
-        public string ParseType(string type)
+        // Parse Type from C# to javascript
+        private string ParseType(string type)
         {
             if (_types.ContainsKey(type))
             {
@@ -80,8 +90,35 @@ namespace TodoApi.Services
             return type;
         }
 
+        // Make Name More readable by addding spaces and capitalizing letters
+        private string? ParseName(string name)
+        {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < name.Length; i++)
+            {
+                if ((Char.IsUpper(name[i])) && builder.Length > 0 && (!Char.IsUpper(name[i - 1]))) builder.Append(' ');
+                if (Char.Equals(name[i], '_'))
+                {
+                    builder.Append(' ');
+                    Console.WriteLine(i);
+
+                    // if(name.Length < i + 1){
+                    builder.Append(Char.ToUpper(name[i + 1]));
+                    i += 2;
+                    // }
+                }
+                builder.Append(name[i]);
+            }
+            name = builder.ToString();
+
+            if (name.Length > 1)
+                name = Char.ToUpper(name[0]) + name.Substring(1);
+
+            return name;
+        }
+
         // Gets all unique Models that are somehow linked to the given model
-        public HashSet<string> GetRelatedNavigations(IEntityType model, HashSet<string>? navigations = null)
+        private HashSet<string> GetRelatedNavigations(IEntityType model, HashSet<string>? navigations = null)
         {
             if (navigations == null)
                 navigations = new HashSet<string>();
@@ -99,37 +136,18 @@ namespace TodoApi.Services
             return navigations;
         }
 
-        // Fetches Fields for the given model and all related models
-        public List<ModelMetadata> GetAllRelatedModelsMetadata(string model)
-        {
-            if (!model.StartsWith(_modelsNamespace)) model = _modelsNamespace + "." + model;
-            var type = _context.Model.FindEntityType(model);
-            if (type == null)
-            {
-                throw new Exception("Model Not Found");
-            }
-
-            var result = new List<ModelMetadata>();
-            var navigations = GetRelatedNavigations(type);
-            navigations.Add(type.ShortName());
-
-            foreach (var navigation in navigations)
-            {
-                var metdata = GetModelMetadata(_context.Model.FindEntityType(_modelsNamespace + "." + navigation)!);
-                result.Add(metdata);
-            }
-
-            return result;
-        }
-
-        public ModelMetadata GetModelMetadata(IEntityType model)
+        // Fetch Fields for Given Model
+        private ModelMetadata GetModelMetadata(IEntityType model)
         {
             List<Field> fields = new List<Field>();
 
             foreach (var property in model.GetProperties()!)
             {
-                var field = new Field { name = property.Name, type = ParseType(property.GetTypeMapping().ClrType.Name) };
-
+                var field = new Field { name = property.Name, displayName = ParseName(property.Name), type = ParseType(property.GetTypeMapping().ClrType.Name) };
+                if (property.ClrType.Name.Contains("Nullable"))
+                {
+                    field.nullable = true;
+                }
                 if (property.IsForeignKey())
                 {
                     var fk = property.GetContainingForeignKeys().ToList().First();
@@ -149,6 +167,85 @@ namespace TodoApi.Services
             }
 
             return new ModelMetadata { name = model.ShortName(), fields = fields, navigations = navigations };
+        }
+
+        // Fetches Fields for the given model and all related models
+        public List<ModelMetadata> GetAllRelatedModelsMetadata(string model)
+        {
+            if (!model.StartsWith(_modelsNamespace)) model = _modelsNamespace + "." + model;
+            var type = _context.Model.FindEntityType(model);
+            if (type == null)
+            {
+                throw new Exception("Model Not Found");
+            }
+
+            var result = new List<ModelMetadata>();
+            var navigations = new HashSet<string>();
+            navigations.Add(type.ShortName());
+            navigations.UnionWith(GetRelatedNavigations(type));
+
+            foreach (var navigation in navigations)
+            {
+                var metdata = GetModelMetadata(_context.Model.FindEntityType(_modelsNamespace + "." + navigation)!);
+                result.Add(metdata);
+            }
+
+            return result;
+        }
+
+
+        public Data GetData(string model, string? where = null, string? whereParams = null, string? includes = null, int take = 0, int skip = 0, string? orderBy = null)
+        {
+            // if (!model.StartsWith(_modelsNamespace)) model = _modelsNamespace + "." + model;
+            // var type = _context.Model.FindEntityType(model);
+            // _context.Set<type>();
+
+            // _context.Set(type)
+            Console.WriteLine(includes);
+            var modelFullName = _modelsNamespace + "." + model;
+            var type = Assembly.GetExecutingAssembly().GetTypes().FirstOrDefault((t) => t.FullName == modelFullName);
+            var parsedIncludes = includes?.Split(',');
+            var parsedWhereParams = whereParams == null ? null : JsonConvert.DeserializeObject<object[]>(whereParams);
+            if (type == null)
+            {
+                throw new Exception("Invalid Model");
+            }
+
+            var set = _context.Set(type);
+
+            set.AsNoTracking();
+
+            if (!string.IsNullOrEmpty(where))
+                set = set.Where(where, parsedWhereParams);
+
+            if (!string.IsNullOrEmpty(orderBy))
+                set = set.OrderBy(orderBy);
+
+            if (skip > 0)
+                set = set.Skip(skip);
+
+            if (take > 0)
+                set = set.Take(take);
+
+            // if (includes != null)
+            //     foreach (var inc in parsedIncludes)
+            //         set = set.Include(inc);
+
+            set = (IQueryable<dynamic>)set.Select(includes != null ? includes : "new {CartItems, totalPrice, new { User.email } as User }");
+
+            // Console.WriteLine("Nice");
+            // set.Where("sd")
+            // typeof(DbSet<object>).().ToList().ForEach((t) =>
+            // {
+            //     Console.WriteLine(t.Name);
+            // });
+            // Console.WriteLine("Nicer");
+
+            // method.MakeGenericMethod(type);
+            // var args = new object?[] { where, whereParams, includes, take, skip, orderBy };
+            // var data = (List<object>)method.Invoke(set, args);
+
+            return new Data { data = set.ToList(), count = 0 };
         }
     }
 }

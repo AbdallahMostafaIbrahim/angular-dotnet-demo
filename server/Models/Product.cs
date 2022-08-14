@@ -14,7 +14,7 @@ namespace TodoApi.Models
         [MaxLength(50)]
         public string description { get; set; } = string.Empty;
 
-        public decimal price { get; set; } = 0;
+        public decimal? price { get; set; } = 0;
 
         public int imageId { get; set; }
         public Image? Image { get; set; }
