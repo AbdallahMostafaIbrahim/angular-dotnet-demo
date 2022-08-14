@@ -3,57 +3,70 @@ using TodoApi.Models;
 using TodoApi.Services;
 namespace TodoApi.Controllers;
 
-public record ModelInput(List<string> models);
+
+public class FilterInput
+{
+  public string? where { get; set; }
+  public List<string>? values { get; set; }
+  public List<string>? includes { get; set; }
+  public int? take { get; set; } = 0;
+  public int? skip { get; set; } = 0;
+  public string? orderBy { get; set; }
+}
+
 
 [ApiController]
 [Route("api/[controller]")]
 public class ModelController : ControllerBase
 {
-    private readonly IModelService _service;
+  private readonly IModelService _service;
 
-    public ModelController(IModelService service)
+  public ModelController(IModelService service)
+  {
+    _service = service;
+  }
+
+  [HttpGet]
+  public IActionResult GetModels()
+  {
+    return Ok(new { models = _service.GetModels() });
+  }
+
+  [HttpGet("fields/{model}")]
+  public IActionResult GetAllFields(string model)
+  {
+    try
     {
-        _service = service;
+      var fields = _service.GetAllRelatedModelsMetadata(model);
+      return Ok(new { fields });
+    }
+    catch (Exception e)
+    {
+      Console.WriteLine(e);
+      return BadRequest(new { message = e.Message });
     }
 
-    [HttpGet]
-    public IActionResult GetModels()
+  }
+
+  [HttpPost("data/{model}")]
+  public IActionResult GetData(string model, FilterInput filter)
+  {
+    try
     {
-        return Ok(new { models = _service.GetModels() });
+      var data = _service.GetData(model, filter.where, filter.values, filter.includes, filter.take ?? 0, filter.skip ?? 0, filter.orderBy);
+      return Ok(new { data });
+    }
+    catch (Exception e)
+    {
+      Console.WriteLine(e);
+      return BadRequest(new { message = e.Message });
     }
 
-    [HttpGet("fields/{model}")]
-    public IActionResult GetAllFields(string model)
-    {
-        try
-        {
-            var fields = _service.GetAllRelatedModelsMetadata(model);
-            return Ok(new { fields });
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            return BadRequest(new { message = e.Message });
-        }
-
-    }
-
-    [HttpGet("data/{model}")]
-    public IActionResult GetData(string model, string? where = null, string? values = null, string? includes = null, int take = 0, int skip = 0, string? orderBy = null)
-    {
-        try
-        {
-            var data = _service.GetData(model, where: where, includes: includes, whereParams: values, take: take, skip: skip, orderBy: orderBy);
-            return Ok(new { data });
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            return BadRequest(new { message = e.Message });
-        }
-
-    }
+  }
 }
+
+public record ModelInput(List<string> models);
+
 // Parse fields like FullName - done
 // Nullable fields - done
 // Get data

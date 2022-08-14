@@ -12,8 +12,8 @@ using TodoApi.Models;
 namespace server.Migrations
 {
     [DbContext(typeof(TodoDBContext))]
-    [Migration("20220814160157_test")]
-    partial class test
+    [Migration("20220814182920_Seeding")]
+    partial class Seeding
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -43,6 +43,20 @@ namespace server.Migrations
                     b.HasIndex("userId");
 
                     b.ToTable("Carts");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            totalPrice = 200m,
+                            userId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            totalPrice = 200m,
+                            userId = 2
+                        });
                 });
 
             modelBuilder.Entity("TodoApi.Models.CartItem", b =>
@@ -66,6 +80,26 @@ namespace server.Migrations
                     b.HasIndex("productId");
 
                     b.ToTable("CartItems");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            cartId = 1,
+                            productId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            cartId = 1,
+                            productId = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            cartId = 2,
+                            productId = 2
+                        });
                 });
 
             modelBuilder.Entity("TodoApi.Models.Category", b =>
@@ -90,6 +124,15 @@ namespace server.Migrations
                     b.HasIndex("imageId");
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            description = "nice",
+                            imageId = 1,
+                            name = "Electronics"
+                        });
                 });
 
             modelBuilder.Entity("TodoApi.Models.Image", b =>
@@ -111,6 +154,26 @@ namespace server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Images");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            imageUrl = "yeet.png",
+                            name = "Image 1"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            imageUrl = "ok.png",
+                            name = "Image 2"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            imageUrl = "adsf.png",
+                            name = "Image 3"
+                        });
                 });
 
             modelBuilder.Entity("TodoApi.Models.Product", b =>
@@ -147,6 +210,44 @@ namespace server.Migrations
                     b.HasIndex("imageId");
 
                     b.ToTable("Products");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            categoryId = 1,
+                            description = "niasdfce",
+                            imageId = 1,
+                            name = "Cool",
+                            price = 100m
+                        },
+                        new
+                        {
+                            Id = 2,
+                            categoryId = 1,
+                            description = "dsd",
+                            imageId = 2,
+                            name = "Very",
+                            price = 123m
+                        },
+                        new
+                        {
+                            Id = 3,
+                            categoryId = 1,
+                            description = "nisadfasdfce",
+                            imageId = 1,
+                            name = "Dope",
+                            price = 10120m
+                        },
+                        new
+                        {
+                            Id = 4,
+                            categoryId = 1,
+                            description = "asdf",
+                            imageId = 3,
+                            name = "Prod",
+                            price = 10120m
+                        });
                 });
 
             modelBuilder.Entity("TodoApi.Models.Todo", b =>
@@ -196,6 +297,22 @@ namespace server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            email = "admin@gmail.com",
+                            password = "$argon2id$v=19$m=1024,t=1,p=1$c29tZXNhbHQ$ZmFtaGxvd2xlZGdl",
+                            username = "admin"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            email = "user@gmail.com",
+                            password = "$argon2id$v=19$m=1024,t=1,p=1$c29tZXNhbHQ$ZmFtaGxvd2xlZGdl",
+                            username = "user"
+                        });
                 });
 
             modelBuilder.Entity("TodoApi.Models.Cart", b =>
