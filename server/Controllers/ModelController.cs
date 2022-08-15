@@ -37,8 +37,8 @@ public class ModelController : ControllerBase
   {
     try
     {
-      var fields = _service.GetAllRelatedModelsMetadata(model);
-      return Ok(new { fields });
+      var data = _service.GetAllRelatedModelsMetadata(model);
+      return Ok(new { data });
     }
     catch (Exception e)
     {
@@ -54,7 +54,7 @@ public class ModelController : ControllerBase
     try
     {
       var data = _service.GetData(model, filter.where, filter.values, filter.includes, filter.take ?? 0, filter.skip ?? 0, filter.orderBy);
-      return Ok(new { data });
+      return Ok(data);
     }
     catch (Exception e)
     {
