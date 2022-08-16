@@ -11,9 +11,10 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { HttpClientModule } from '@angular/common/http';
 import { MatSelectModule } from '@angular/material/select';
+import { GetValuePipe } from './pages/home/utils/getValue';
 
 @NgModule({
-  declarations: [AppComponent, HomeComponent, TableViewComponent],
+  declarations: [AppComponent, HomeComponent, TableViewComponent, GetValuePipe],
   imports: [
     BrowserModule,
     AppRoutingModule,

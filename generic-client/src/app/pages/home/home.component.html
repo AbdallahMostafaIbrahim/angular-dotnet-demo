@@ -2,7 +2,10 @@
 
 <mat-form-field appearance="fill">
   <mat-label>Select an option</mat-label>
-  <mat-select [(value)]="currentModel">
+  <mat-select
+    [(value)]="currentModel"
+    (selectionChange)="onModelChange($event)"
+  >
     <mat-option>None</mat-option>
     <mat-option *ngFor="let model of models" [value]="model">
       {{ model }}
@@ -10,4 +13,7 @@
   </mat-select>
 </mat-form-field>
 
-<table-view></table-view>
+<table-view
+  [displayedColumns]="selectedFIelds"
+  [dataSource]="data"
+></table-view>
