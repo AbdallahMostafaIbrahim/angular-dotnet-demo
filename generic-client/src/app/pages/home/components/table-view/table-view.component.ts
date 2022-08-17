@@ -9,7 +9,7 @@ import {
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
-import { TableViewItem } from './table-view-datasource';
+import { FieldData } from '../../../../lib/interfaces/model';
 
 @Component({
   selector: 'table-view',
@@ -17,24 +17,22 @@ import { TableViewItem } from './table-view-datasource';
   styleUrls: ['./table-view.component.scss'],
 })
 export class TableViewComponent implements AfterViewInit, OnChanges {
-  // @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
-  @ViewChild(MatTable) table!: MatTable<TableViewItem>;
   @Input() dataSource: any[] = [];
-  @Input() displayedColumns: string[] = [];
+  @Input() columns: FieldData[] = [];
 
   constructor() {}
 
+  displayedColumns: string[] = [];
+  realColumns: string[] = [];
+
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
-    // if (changes.dataSource) {
-    //   this.dataSource = changes.dataSource.currentValue;
-    // }
+    if (
+      changes['columns']?.previousValue !== changes['columns']?.currentValue
+    ) {
+      this.displayedColumns = this.columns.map((field) => field.displayName);
+      this.realColumns = this.columns.map((field) => field.name);
+    }
   }
 
-  ngAfterViewInit(): void {
-    // this.dataSource.sort = this.sort;
-    // this.dataSource.paginator = this.paginator;
-    // this.table.dataSource = this.dataSource;
-  }
+  ngAfterViewInit(): void {}
 }

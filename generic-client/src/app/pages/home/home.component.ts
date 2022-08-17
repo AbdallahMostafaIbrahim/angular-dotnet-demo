@@ -6,7 +6,7 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { MatSelectChange } from '@angular/material/select';
-import { ModelMetadata } from 'src/app/lib/interfaces/model';
+import { FieldData, ModelMetadata } from 'src/app/lib/interfaces/model';
 import { HomeService } from './services/home.service';
 
 @Component({
@@ -20,14 +20,14 @@ export class HomeComponent implements OnInit {
   models: string[] = [];
   currentModel?: string;
   modelMetadata: ModelMetadata = {};
-  selectedFIelds: string[] = [];
+  selectedFields: FieldData[] = [];
   data: any[] = [];
 
   onModelChange(event: MatSelectChange) {
     this.service.getMetadata(event.value).subscribe((data) => {
       this.modelMetadata = data.data;
-      this.selectedFIelds = this.modelMetadata[event.value].fields.map(
-        (field) => field.name
+      this.selectedFields = this.modelMetadata[event.value].fields.filter(
+        (field) => !field.foreignModel
       );
       this.service.getData(event.value).subscribe((data) => {
         this.data = data.data;

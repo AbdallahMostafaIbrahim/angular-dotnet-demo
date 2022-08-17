@@ -1,24 +1,14 @@
-<mat-table #table [dataSource]="dataSource" class="mat-elevation-z8">
+<mat-table #table [dataSource]="dataSource" class="mat-elevation-z4">
   <ng-container
-    *ngFor="let disCol of displayedColumns; let colIndex = index"
-    matColumnDef="{{ disCol }}"
+    matColumnDef="{{ col.name }}"
+    *ngFor="let col of columns; let colIndex = index"
   >
-    <mat-header-cell *matHeaderCellDef>{{ disCol }}</mat-header-cell>
-    <mat-cell *matCellDef="let element">
-      {{ element | getValue: disCol }}
-    </mat-cell>
+    <mat-header-cell *matHeaderCellDef>{{ col.displayName }}</mat-header-cell>
+    <mat-cell *matCellDef="let element">{{
+      element | getValue: col.name
+    }}</mat-cell>
   </ng-container>
 
-  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-  <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+  <mat-header-row *matHeaderRowDef="realColumns"></mat-header-row>
+  <mat-row *matRowDef="let myRowData; columns: realColumns"></mat-row>
 </mat-table>
-<!-- 
-<mat-paginator
-  #paginator
-  [length]="dataSource?.data?.length"
-  [pageIndex]="0"
-  [pageSize]="10"
-  [pageSizeOptions]="[5, 10, 20]"
-  aria-label="Select page"
->
-</mat-paginator> -->

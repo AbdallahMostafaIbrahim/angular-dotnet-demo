@@ -1,7 +1,7 @@
 <h1>Model Viewer</h1>
 
 <mat-form-field appearance="fill">
-  <mat-label>Select an option</mat-label>
+  <mat-label>Select A Model</mat-label>
   <mat-select
     [(value)]="currentModel"
     (selectionChange)="onModelChange($event)"
@@ -14,6 +14,7 @@
 </mat-form-field>
 
 <table-view
-  [displayedColumns]="selectedFIelds"
+  *ngIf="currentModel"
+  [columns]="selectedFields"
   [dataSource]="data"
 ></table-view>
