@@ -26,9 +26,7 @@ export class TableViewComponent implements AfterViewInit, OnChanges {
   realColumns: string[] = [];
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (
-      changes['columns']?.previousValue !== changes['columns']?.currentValue
-    ) {
+    if (changes['columns']) {
       this.displayedColumns = this.columns.map((field) => field.displayName);
       this.realColumns = this.columns.map((field) => field.name);
     }

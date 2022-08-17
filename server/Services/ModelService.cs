@@ -31,6 +31,7 @@ namespace TodoApi.Services
     }
     public class ModelMetadata
     {
+        public string name { get; set; } = string.Empty;
         public List<Field> fields { get; set; } = new List<Field>();
 
         public List<Navigation> navigations { get; set; } = new List<Navigation>();
@@ -38,7 +39,7 @@ namespace TodoApi.Services
     public interface IModelService
     {
         List<string> GetModels();
-        Dictionary<string, ModelMetadata> GetAllRelatedModelsMetadata(string model);
+        List<ModelMetadata> GetAllRelatedModelsMetadata(string model);
         Data GetData(string model, string? where = null, List<string>? whereParams = null, List<string>? includes = null, int take = 0, int skip = 0, string? orderBy = null);
     }
     public class ModelService : IModelService
@@ -162,11 +163,11 @@ namespace TodoApi.Services
                 navigations.Add(nav);
             }
 
-            return new ModelMetadata { fields = fields, navigations = navigations, };
+            return new ModelMetadata { name= model.ShortName(), fields = fields, navigations = navigations, };
         }
 
         // Fetches Fields for the given model and all related models
-        public Dictionary<string, ModelMetadata> GetAllRelatedModelsMetadata(string model)
+        public List<ModelMetadata> GetAllRelatedModelsMetadata(string model)
         {
             if (!model.StartsWith(_modelsNamespace)) model = _modelsNamespace + "." + model;
             var type = _context.Model.FindEntityType(model);
@@ -175,15 +176,15 @@ namespace TodoApi.Services
                 throw new Exception("Model Not Found");
             }
 
-            var result = new Dictionary<string, ModelMetadata>();
+            var result = new List<ModelMetadata>();
             var navigations = new HashSet<string>();
             navigations.Add(type.ShortName());
             navigations.UnionWith(GetRelatedNavigations(type));
 
             foreach (var navigation in navigations)
             {
-                var metdata = GetModelMetadata(_context.Model.FindEntityType(_modelsNamespace + "." + navigation)!);
-                result.Add(navigation, metdata);
+                var metadata = GetModelMetadata(_context.Model.FindEntityType(_modelsNamespace + "." + navigation)!);
+                result.Add(metadata);
             }
 
             return result;

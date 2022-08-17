@@ -17,7 +17,7 @@ export class HomeService {
 
   getMetadata(model: string) {
     return this.httpClient.get<{
-      data: ModelMetadata;
+      data: ModelMetadata[];
     }>(`${BASE_URL}api/Model/fields/${model}`);
   }
 

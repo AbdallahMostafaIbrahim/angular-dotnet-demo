@@ -11,7 +11,14 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { HttpClientModule } from '@angular/common/http';
 import { MatSelectModule } from '@angular/material/select';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { GetValuePipe } from './pages/home/utils/getValue';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatIconModule } from '@angular/material/icon';
+import { MaterialModule } from './material-module';
 
 @NgModule({
   declarations: [AppComponent, HomeComponent, TableViewComponent, GetValuePipe],
@@ -19,11 +26,18 @@ import { GetValuePipe } from './pages/home/utils/getValue';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    MatFormFieldModule,
+    MatInputModule,
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
     HttpClientModule,
     MatSelectModule,
+    MatAutocompleteModule,
+    MatChipsModule,
+    MatIconModule,
+    MaterialModule,
+    ReactiveFormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

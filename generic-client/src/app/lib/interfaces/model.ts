@@ -12,8 +12,20 @@ export interface NavigationData {
 }
 
 export interface ModelMetadata {
-  [key: string]: {
-    fields: FieldData[];
-    navigations: NavigationData[];
-  };
+  name: string;
+  fields: FieldData[];
+  navigations: NavigationData[];
+}
+
+export interface FieldNode {
+  children?: FieldNode[];
+  name: string;
+  displayName: string;
+}
+
+export interface FieldFlatNode {
+  name: string;
+  displayName: string;
+  level: number;
+  expandable: boolean;
 }
