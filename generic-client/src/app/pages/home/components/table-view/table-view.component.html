@@ -1,7 +1,7 @@
-<mat-table #table [dataSource]="dataSource" class="mat-elevation-z4">
+<mat-table #table [dataSource]="data" class="mat-elevation-z4">
   <ng-container
     matColumnDef="{{ col.name }}"
-    *ngFor="let col of columns; let colIndex = index"
+    *ngFor="let col of selectedFields; let colIndex = index"
   >
     <mat-header-cell *matHeaderCellDef>{{ col.displayName }}</mat-header-cell>
     <mat-cell *matCellDef="let element">{{

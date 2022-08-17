@@ -1,3 +1,5 @@
+export type NavigationType = 'Collection' | 'Reference';
+
 export interface FieldData {
   name: string;
   displayName: string;
@@ -8,7 +10,7 @@ export interface FieldData {
 export interface NavigationData {
   name: string;
   reference: string;
-  type: 'Collection' | 'Reference';
+  type: NavigationType;
 }
 
 export interface ModelMetadata {
@@ -21,6 +23,8 @@ export interface FieldNode {
   children?: FieldNode[];
   name: string;
   displayName: string;
+  navigationName?: string;
+  navigationTypes?: NavigationType[];
 }
 
 export interface FieldFlatNode {
@@ -28,4 +32,5 @@ export interface FieldFlatNode {
   displayName: string;
   level: number;
   expandable: boolean;
+  navigationTypes?: NavigationType[];
 }

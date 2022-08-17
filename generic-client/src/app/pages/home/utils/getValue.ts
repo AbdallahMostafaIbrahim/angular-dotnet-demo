@@ -10,12 +10,15 @@ function getValueFromKey(element: { [k: string]: any }, k: string) {
 @Pipe({ name: 'getValue' })
 export class GetValuePipe implements PipeTransform {
   transform(element: { [k: string]: any }, k: string): any {
+    console.log(k);
     if (k.includes('.')) {
       const keys = k.split('.');
-      if (keys.length >= 2) {
-        return getValueFromKey(this.transform(element, keys[0]), keys[1]);
-      }
+      return this.transform(
+        getValueFromKey(element, keys[0]),
+        keys.slice(1).join('.')
+      );
     }
+    console.log(element);
     return getValueFromKey(element, k);
   }
 }

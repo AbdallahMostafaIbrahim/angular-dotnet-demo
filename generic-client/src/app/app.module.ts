@@ -19,9 +19,11 @@ import { MatInputModule } from '@angular/material/input';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MaterialModule } from './material-module';
+import { TreeViewComponent } from './pages/home/components/tree-view/tree-view.component';
+import { ModelSelectorComponent } from './pages/home/components/model-selector/model-selector.component';
 
 @NgModule({
-  declarations: [AppComponent, HomeComponent, TableViewComponent, GetValuePipe],
+  declarations: [AppComponent, HomeComponent, TableViewComponent, GetValuePipe, TreeViewComponent, ModelSelectorComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

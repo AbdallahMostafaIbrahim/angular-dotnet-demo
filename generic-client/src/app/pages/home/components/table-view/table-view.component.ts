@@ -3,34 +3,36 @@ import {
   Component,
   Input,
   OnChanges,
+  OnInit,
   SimpleChanges,
-  ViewChild,
 } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { MatTable } from '@angular/material/table';
-import { FieldData } from '../../../../lib/interfaces/model';
+import { FieldData, FieldFlatNode } from '../../../../lib/interfaces/model';
+import { ModelService } from '../../services/model.service';
 
 @Component({
   selector: 'table-view',
   templateUrl: './table-view.component.html',
   styleUrls: ['./table-view.component.scss'],
 })
-export class TableViewComponent implements AfterViewInit, OnChanges {
-  @Input() dataSource: any[] = [];
-  @Input() columns: FieldData[] = [];
+export class TableViewComponent implements OnInit {
+  constructor(private service: ModelService) {}
 
-  constructor() {}
-
+  data: any[] = [];
   displayedColumns: string[] = [];
   realColumns: string[] = [];
+  selectedFields: FieldFlatNode[] = [];
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['columns']) {
-      this.displayedColumns = this.columns.map((field) => field.displayName);
-      this.realColumns = this.columns.map((field) => field.name);
-    }
+  ngOnInit(): void {
+    this.service.selectedFields.subscribe((value) => {
+      value = value.filter((field) => field.navigationTypes);
+      this.selectedFields = value;
+      this.realColumns = value.map((field) => field.name);
+      this.displayedColumns = value.map((field) => field.displayName);
+      if (value.length > 0) {
+        this.service.getData(value.map((f) => f.name)).subscribe((data) => {
+          this.data = data.data;
+        });
+      }
+    });
   }
-
-  ngAfterViewInit(): void {}
 }
