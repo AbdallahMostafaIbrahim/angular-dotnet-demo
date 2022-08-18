@@ -10,6 +10,7 @@ export interface FieldData {
 export interface NavigationData {
   name: string;
   reference: string;
+  foreignKey: string;
   type: NavigationType;
 }
 

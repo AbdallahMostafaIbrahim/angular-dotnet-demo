@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Sort } from '@angular/material/sort';
 import { FieldFlatNode, IPage } from 'src/app/lib/interfaces/model';
 import { ModelService } from './services/model.service';
 
@@ -14,13 +15,16 @@ export class HomeComponent implements OnInit {
   selectedFields: FieldFlatNode[] = [];
   data: any[] = [];
   count: number = 0;
+  filter: string = '';
   page: IPage = { skip: 0, take: 10 };
+  sort: Sort = { active: '', direction: '' };
 
   refetch(): void {
     this.service
       .getData(
         this.selectedFields.map((f) => f.name),
-        this.page
+        this.page,
+        this.sort
       )
       .subscribe((data) => {
         this.data = data.data;
@@ -34,6 +38,7 @@ export class HomeComponent implements OnInit {
       this.data = [];
       this.selectedFields = [];
       this.page = { skip: 0, take: 10 };
+      this.sort = { active: '', direction: '' };
     });
     this.service.selectedFields.subscribe((fields) => {
       this.selectedFields = fields;
@@ -45,6 +50,10 @@ export class HomeComponent implements OnInit {
 
   onPageChange(page: IPage) {
     this.page = page;
+    this.refetch();
+  }
+  onSortChange(sort: Sort) {
+    this.sort = sort;
     this.refetch();
   }
 }

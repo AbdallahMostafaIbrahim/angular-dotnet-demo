@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Sort } from '@angular/material/sort';
 import { BehaviorSubject, Observable } from 'rxjs';
 import {
   FieldFlatNode,
@@ -50,7 +51,7 @@ export class ModelService {
     }>(`${BASE_URL}/api/Model/fields/${this.currentModelSubject.value}`);
   }
 
-  getData(includes?: string[], page?: IPage) {
+  getData(includes?: string[], page?: IPage, sort?: Sort) {
     return this.httpClient.post<{
       data: any[];
       count: number;
@@ -58,6 +59,10 @@ export class ModelService {
       includes,
       skip: page?.skip || 0,
       take: page?.take || 10,
+      orderBy:
+        sort?.active && sort?.direction
+          ? `${sort.active} ${sort.direction}`
+          : undefined,
     });
   }
 }

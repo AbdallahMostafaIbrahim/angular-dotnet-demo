@@ -15,6 +15,7 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
+import { Sort } from '@angular/material/sort';
 import { FieldFlatNode, IPage } from '../../../../lib/interfaces/model';
 
 @Component({
@@ -51,6 +52,10 @@ export class TableViewComponent implements OnInit, OnChanges {
   page: IPage = { skip: 0, take: 10 };
   @Output()
   pageChange = new EventEmitter<IPage>();
+  @Input()
+  sort: Sort = { active: '', direction: '' };
+  @Output()
+  sortChange = new EventEmitter<Sort>();
 
   displayedColumns: string[] = ['actions'];
   realColumns: string[] = ['actions'];
@@ -68,6 +73,11 @@ export class TableViewComponent implements OnInit, OnChanges {
 
   toggleRow(element: { _expanded?: boolean }) {
     element._expanded = !element._expanded;
+  }
+
+  sortData(event: Sort) {
+    this.sort = event;
+    this.sortChange.emit(event);
   }
 
   generateFieldsForInnerTable(fields: FieldFlatNode[]): FieldFlatNode[] {

@@ -28,6 +28,7 @@ namespace TodoApi.Services
     public string name { get; set; } = string.Empty;
     public string reference { get; set; } = string.Empty;
     public string type { get; set; } = string.Empty;
+    public string foreignKey { get; set; } = string.Empty;
   }
   public class ModelMetadata
   {
@@ -158,8 +159,8 @@ namespace TodoApi.Services
 
       List<Navigation> navigations = new List<Navigation>();
       foreach (var navigation in model.GetNavigations())
-      {
-        var nav = new Navigation { name = navigation.Name, reference = navigation.TargetEntityType.ShortName(), type = navigation.IsCollection ? "Collection" : "Reference" };
+      { 
+        var nav = new Navigation { name = navigation.Name, reference = navigation.TargetEntityType.ShortName(), type = navigation.IsCollection ? "Collection" : "Reference", foreignKey = navigation.ForeignKey.Properties.ToList()[0].Name };
         navigations.Add(nav);
       }
 
@@ -211,15 +212,13 @@ namespace TodoApi.Services
       }
       foreach (var nav in navigations)
       {
-        // Console.WriteLine("Navigation: " + model?.Name);
-        // model?.GetNavigations().ToList().ForEach((d) => Console.WriteLine(d.Name));
         var isCollection = model?.GetNavigations().Where(n => n.Name == nav).FirstOrDefault()?.IsCollection;
         if (isCollection == true)
         {
+          // throw new Exception("Collection Navigation not supported");
           select += $"{nSpace}{nav}.Select(";
         }
         var newModel = model?.GetNavigations().Where(n => n.Name == nav).FirstOrDefault()?.TargetEntityType!;
-        Console.WriteLine(newModel);
         select += GenerateSelectStatement(
           includes.Where((i) => i.StartsWith(nav)).Select((i) => string.Join('.', i.Split('.').Skip(1))).ToList(),
           newModel,
