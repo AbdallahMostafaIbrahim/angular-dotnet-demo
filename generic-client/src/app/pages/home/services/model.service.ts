@@ -4,6 +4,7 @@ import { Sort } from '@angular/material/sort';
 import { BehaviorSubject, Observable } from 'rxjs';
 import {
   FieldFlatNode,
+  FilterParams,
   IPage,
   ModelMetadata,
 } from 'src/app/lib/interfaces/model';
@@ -51,7 +52,7 @@ export class ModelService {
     }>(`${BASE_URL}/api/Model/fields/${this.currentModelSubject.value}`);
   }
 
-  getData(includes?: string[], page?: IPage, sort?: Sort) {
+  getData({ includes, page, sort }: FilterParams) {
     return this.httpClient.post<{
       data: any[];
       count: number;

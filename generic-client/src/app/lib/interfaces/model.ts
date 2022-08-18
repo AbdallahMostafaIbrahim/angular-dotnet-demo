@@ -1,3 +1,5 @@
+import { Sort } from '@angular/material/sort';
+
 export type NavigationType = 'Collection' | 'Reference';
 
 export interface FieldData {
@@ -39,4 +41,10 @@ export interface FieldFlatNode {
 export interface IPage {
   skip: number;
   take: number;
+}
+
+export interface FilterParams {
+  includes?: string[];
+  page?: IPage;
+  sort?: Sort;
 }

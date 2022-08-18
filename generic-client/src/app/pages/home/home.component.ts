@@ -21,11 +21,11 @@ export class HomeComponent implements OnInit {
 
   refetch(): void {
     this.service
-      .getData(
-        this.selectedFields.map((f) => f.name),
-        this.page,
-        this.sort
-      )
+      .getData({
+        includes: this.selectedFields.map((f) => f.name),
+        page: this.page,
+        sort: this.sort,
+      })
       .subscribe((data) => {
         this.data = data.data;
         this.count = data.count;

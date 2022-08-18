@@ -17,7 +17,11 @@ import {
 } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
-import { FieldFlatNode, IPage } from '../../../../lib/interfaces/model';
+import {
+  FieldFlatNode,
+  FilterParams,
+  IPage,
+} from '../../../../lib/interfaces/model';
 
 @Component({
   selector: 'table-view[selectedFields][data]',
