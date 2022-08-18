@@ -56,4 +56,8 @@ export class HomeComponent implements OnInit {
     this.sort = sort;
     this.refetch();
   }
+  onSelectedFieldsChange(fields: FieldFlatNode[]) {
+    this.selectedFields = fields;
+    this.refetch();
+  }
 }

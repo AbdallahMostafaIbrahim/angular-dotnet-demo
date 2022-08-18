@@ -9,6 +9,7 @@
 <table-view
   *ngIf="currentModel"
   [selectedFields]="selectedFields"
+  (selectedFieldsChange)="onSelectedFieldsChange($event)"
   [data]="data"
   [page]="page"
   (pageChange)="onPageChange($event)"

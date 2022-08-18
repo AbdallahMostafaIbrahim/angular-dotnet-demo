@@ -5,6 +5,7 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
+import { CdkDragDrop, CdkDragStart } from '@angular/cdk/drag-drop';
 import {
   Component,
   EventEmitter,
@@ -42,6 +43,8 @@ export class TableViewComponent implements OnInit, OnChanges {
 
   @Input()
   selectedFields: FieldFlatNode[] = [];
+  @Output()
+  selectedFieldsChange = new EventEmitter<FieldFlatNode[]>();
   @Input()
   data: any[] = [];
   @Input()
@@ -62,6 +65,7 @@ export class TableViewComponent implements OnInit, OnChanges {
   distinctCollections: Set<string> = new Set<string>();
   selectedReferenceFields: FieldFlatNode[] = [];
   selectedCollectionFields: FieldFlatNode[] = [];
+  previousIndex?: number;
 
   onPagination(event: PageEvent) {
     this.page = {
@@ -86,6 +90,20 @@ export class TableViewComponent implements OnInit, OnChanges {
       name: field.name.split('.').splice(1).join('.'),
       navigationTypes: field.navigationTypes?.slice(1),
     }));
+  }
+
+  dragStarted(event: CdkDragStart, index: number) {
+    this.previousIndex = index;
+  }
+
+  headerDrop(event: CdkDragDrop<any, any, any>) {
+    if (event) {
+      var b = this.selectedFields[event.currentIndex];
+      this.selectedFields[event.currentIndex] =
+        this.selectedFields[event.previousIndex!];
+      this.selectedFields[event.previousIndex!] = b;
+      this.selectedFieldsChange.emit(this.selectedFields);
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {

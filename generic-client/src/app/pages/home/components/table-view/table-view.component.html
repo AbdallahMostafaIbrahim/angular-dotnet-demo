@@ -8,14 +8,22 @@
   (matSortChange)="sortData($event)"
   [matSortActive]="sort.active"
   [matSortDirection]="sort.direction"
+  cdkDropList
+  cdkDropListOrientation="horizontal"
+  (cdkDropListDropped)="headerDrop($event)"
 >
   <ng-container
     matColumnDef="{{ col.name }}"
     *ngFor="let col of selectedReferenceFields; let colIndex = index"
   >
-    <mat-header-cell [mat-sort-header]="col.name" *matHeaderCellDef>{{
-      col | parseName
-    }}</mat-header-cell>
+    <mat-header-cell
+      [mat-sort-header]="col.name"
+      *matHeaderCellDef
+      cdkDrag
+      cdkDragLockAxis="x"
+      cdkDragBoundary="mat-header-row"
+      >{{ col | parseName }}</mat-header-cell
+    >
     <mat-cell *matCellDef="let element">{{
       element | getValue: col.name
     }}</mat-cell>
