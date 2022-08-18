@@ -1,8 +1,21 @@
-.full-width-table {
+#table {
   width: 100%;
 }
 
-.mat-table {
-  border-radius: 8px;
-  overflow: hidden !important;
+.element-row {
+  position: relative;
+}
+
+.element-row:hover {
+  background: #f5f5f5;
+}
+
+.element-row.expanded {
+  border-bottom-color: transparent;
+}
+
+.detail-row {
+  opacity: 0;
+  height: 0;
+  width: 100%;
 }

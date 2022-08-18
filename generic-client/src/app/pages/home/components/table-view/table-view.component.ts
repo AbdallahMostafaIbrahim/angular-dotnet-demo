@@ -1,38 +1,114 @@
 import {
-  AfterViewInit,
+  animate,
+  state,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
+import {
   Component,
+  EventEmitter,
   Input,
   OnChanges,
   OnInit,
+  Output,
   SimpleChanges,
 } from '@angular/core';
-import { FieldData, FieldFlatNode } from '../../../../lib/interfaces/model';
-import { ModelService } from '../../services/model.service';
+import { PageEvent } from '@angular/material/paginator';
+import { FieldFlatNode, IPage } from '../../../../lib/interfaces/model';
 
 @Component({
-  selector: 'table-view',
+  selector: 'table-view[selectedFields][data]',
   templateUrl: './table-view.component.html',
   styleUrls: ['./table-view.component.scss'],
+  animations: [
+    trigger('detailExpand', [
+      state(
+        'collapsed',
+        style({ height: '0px', minHeight: '0', opacity: '0' })
+      ),
+      state('expanded', style({ height: '*', opacity: 1 })),
+      transition(
+        'expanded <=> collapsed',
+        animate('100ms cubic-bezier(0.4, 0.0, 0.2, 1)')
+      ),
+    ]),
+  ],
 })
-export class TableViewComponent implements OnInit {
-  constructor(private service: ModelService) {}
+export class TableViewComponent implements OnInit, OnChanges {
+  constructor() {}
+  pageSizeOptions: number[] = [5, 10, 25, 100];
 
-  data: any[] = [];
-  displayedColumns: string[] = [];
-  realColumns: string[] = [];
+  @Input()
   selectedFields: FieldFlatNode[] = [];
+  @Input()
+  data: any[] = [];
+  @Input()
+  count: number = 1000;
+  @Input()
+  innerTable = false;
+  @Input()
+  page: IPage = { skip: 0, take: 10 };
+  @Output()
+  pageChange = new EventEmitter<IPage>();
 
-  ngOnInit(): void {
-    this.service.selectedFields.subscribe((value) => {
-      value = value.filter((field) => field.navigationTypes);
-      this.selectedFields = value;
-      this.realColumns = value.map((field) => field.name);
-      this.displayedColumns = value.map((field) => field.displayName);
-      if (value.length > 0) {
-        this.service.getData(value.map((f) => f.name)).subscribe((data) => {
-          this.data = data.data;
-        });
-      }
-    });
+  displayedColumns: string[] = ['actions'];
+  realColumns: string[] = ['actions'];
+  distinctCollections: Set<string> = new Set<string>();
+  selectedReferenceFields: FieldFlatNode[] = [];
+  selectedCollectionFields: FieldFlatNode[] = [];
+
+  onPagination(event: PageEvent) {
+    this.page = {
+      skip: event.pageSize * event.pageIndex,
+      take: event.pageSize,
+    };
+    this.pageChange.emit(this.page);
   }
+
+  toggleRow(element: { _expanded?: boolean }) {
+    element._expanded = !element._expanded;
+  }
+
+  generateFieldsForInnerTable(fields: FieldFlatNode[]): FieldFlatNode[] {
+    return fields.map((field) => ({
+      ...field,
+      name: field.name.split('.').splice(1).join('.'),
+      navigationTypes: field.navigationTypes?.slice(1),
+    }));
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['selectedFields']) {
+      this.selectedFields = this.selectedFields.filter(
+        (field) => field.navigationTypes
+      );
+
+      this.selectedReferenceFields = this.selectedFields.filter(
+        (v) => !v.navigationTypes?.includes('Collection')
+      );
+      this.selectedCollectionFields = this.selectedFields.filter((v) =>
+        v.navigationTypes?.includes('Collection')
+      );
+      this.realColumns = this.selectedReferenceFields.map(
+        (field) => field.name
+      );
+      this.realColumns.push('actions');
+      this.displayedColumns = this.selectedReferenceFields.map(
+        (field) => field.displayName
+      );
+      this.distinctCollections = new Set<string>();
+      for (var i = 0; i < this.selectedCollectionFields.length; i++) {
+        if (this.selectedCollectionFields[i].name.includes('.')) {
+          const field = this.selectedCollectionFields[i];
+          if (!field.navigationTypes) continue;
+          if (field.navigationTypes[0] === 'Collection') {
+            this.distinctCollections.add(field.name.split('.')[0]);
+          }
+        }
+      }
+    }
+  }
+
+  ngOnInit(): void {}
 }

@@ -211,12 +211,15 @@ namespace TodoApi.Services
       }
       foreach (var nav in navigations)
       {
+        // Console.WriteLine("Navigation: " + model?.Name);
+        // model?.GetNavigations().ToList().ForEach((d) => Console.WriteLine(d.Name));
         var isCollection = model?.GetNavigations().Where(n => n.Name == nav).FirstOrDefault()?.IsCollection;
         if (isCollection == true)
         {
           select += $"{nSpace}{nav}.Select(";
         }
-        var newModel = _context.Model.FindEntityType(_modelsNamespace + "." + nav)!;
+        var newModel = model?.GetNavigations().Where(n => n.Name == nav).FirstOrDefault()?.TargetEntityType!;
+        Console.WriteLine(newModel);
         select += GenerateSelectStatement(
           includes.Where((i) => i.StartsWith(nav)).Select((i) => string.Join('.', i.Split('.').Skip(1))).ToList(),
           newModel,

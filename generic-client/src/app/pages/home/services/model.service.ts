@@ -1,7 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { FieldFlatNode, ModelMetadata } from 'src/app/lib/interfaces/model';
+import {
+  FieldFlatNode,
+  IPage,
+  ModelMetadata,
+} from 'src/app/lib/interfaces/model';
 
 const BASE_URL = 'http://localhost:4000';
 
@@ -46,12 +50,14 @@ export class ModelService {
     }>(`${BASE_URL}/api/Model/fields/${this.currentModelSubject.value}`);
   }
 
-  getData(includes?: string[]) {
+  getData(includes?: string[], page?: IPage) {
     return this.httpClient.post<{
       data: any[];
       count: number;
     }>(`${BASE_URL}/api/Model/data/${this.currentModelSubject.value}`, {
       includes,
+      skip: page?.skip || 0,
+      take: page?.take || 10,
     });
   }
 }

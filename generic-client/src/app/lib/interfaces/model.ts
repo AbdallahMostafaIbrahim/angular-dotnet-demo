@@ -34,3 +34,8 @@ export interface FieldFlatNode {
   expandable: boolean;
   navigationTypes?: NavigationType[];
 }
+
+export interface IPage {
+  skip: number;
+  take: number;
+}

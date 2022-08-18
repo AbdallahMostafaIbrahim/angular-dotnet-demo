@@ -25,6 +25,10 @@ namespace TodoApi.Models
         .WithMany(u => u.CartItems)
         .IsRequired();
 
+      modelBuilder.Entity<Cart>().HasOne(c => c.User)
+        .WithMany(u => u.Carts)
+        .IsRequired();
+
       modelBuilder.Entity<Student>()
         .HasOne<Class>(t => t.Class)
         .WithMany(u => u.Students)

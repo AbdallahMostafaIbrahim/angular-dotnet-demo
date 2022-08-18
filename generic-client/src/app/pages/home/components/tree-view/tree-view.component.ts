@@ -194,14 +194,21 @@ export class TreeViewComponent implements OnInit {
               children: generateTree(data, model),
             },
           ];
-          this.modelMetadata = data;
+          this.service.setMetadata(data);
+          this.checklistSelection.clear();
+          this.checklistSelection.select(
+            ...this.treeControl.dataNodes.filter((node) => node.level === 1)
+          );
         });
-        this.service.setSelectedFields([]);
-        this.checklistSelection.clear();
       }
     });
     this.checklistSelection.changed.subscribe((c) => {
-      this.service.setSelectedFields(c.source.selected);
+      this.service.setSelectedFields(
+        c.source.selected.filter((f) => f.navigationTypes)
+      );
+    });
+    this.service.metdata.subscribe((metadata) => {
+      this.modelMetadata = metadata;
     });
   }
 }

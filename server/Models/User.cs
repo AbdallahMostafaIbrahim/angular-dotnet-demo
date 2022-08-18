@@ -12,5 +12,7 @@ namespace TodoApi.Models
 
     [JsonIgnore]
     public string password { get; set; } = string.Empty;
+
+    public ICollection<Cart>? Carts { get; set; }
   }
 }

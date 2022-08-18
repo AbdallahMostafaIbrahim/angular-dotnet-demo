@@ -6,4 +6,11 @@
 
 <div style="padding: 1rem 0rem"></div>
 
-<table-view *ngIf="currentModel"></table-view>
+<table-view
+  *ngIf="currentModel"
+  [selectedFields]="selectedFields"
+  [data]="data"
+  [page]="page"
+  (pageChange)="onPageChange($event)"
+  [count]="count"
+></table-view>
