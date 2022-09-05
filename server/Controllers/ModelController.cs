@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using TodoApi.Models;
 using TodoApi.Services;
+using CsvHelper;
+using System.Globalization;
+using System.Text;
 namespace TodoApi.Controllers;
-
 
 public class FilterInput
 {
@@ -61,13 +63,29 @@ public class ModelController : ControllerBase
       Console.WriteLine(e);
       return BadRequest(new { message = e.Message });
     }
+  }
 
+  [HttpPost("export/{model}")]
+  public IActionResult ExportModel(string model, FilterInput filter)
+  {
+    try
+    {
+      var data = _service.GetData(model, filter.where, filter.values, filter.includes, filter.take ?? 0, filter.skip ?? 0, filter.orderBy);
+      using (var writer = new StringWriter())
+      using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+      {
+        csv.WriteRecords(data.data);
+
+        var stream = new MemoryStream(Encoding.UTF8.GetBytes(writer.ToString() ?? ""));
+        return File(stream, "text/csv");
+      }
+    }
+    catch (Exception e)
+    {
+      Console.WriteLine(e);
+      return BadRequest(new { message = e.Message });
+    }
   }
 }
 
 public record ModelInput(List<string> models);
-
-// Parse fields like FullName - done
-// Nullable fields - done
-// Get data
-// Extension
