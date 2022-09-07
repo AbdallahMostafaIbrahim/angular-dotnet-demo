@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Sort } from '@angular/material/sort';
 import { BehaviorSubject, Observable } from 'rxjs';
 import {
   FieldFlatNode,
@@ -65,5 +64,21 @@ export class ModelService {
           ? `${sort.active} ${sort.direction}`
           : undefined,
     });
+  }
+
+  exportAsCSV({ includes, page, sort }: FilterParams) {
+    return this.httpClient.post(
+      `${BASE_URL}/api/Model/export/${this.currentModelSubject.value}`,
+      {
+        includes,
+        skip: page?.skip || 0,
+        take: page?.take || 10,
+        orderBy:
+          sort?.active && sort?.direction
+            ? `${sort.active} ${sort.direction}`
+            : undefined,
+      },
+      { responseType: 'blob' }
+    );
   }
 }

@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using TodoApi.Models;
 using TodoApi.Services;
 using CsvHelper;
 using System.Globalization;
@@ -22,6 +21,23 @@ public class FilterInput
 public class ModelController : ControllerBase
 {
   private readonly IModelService _service;
+
+  public static object GetPropertyValue(object src, string propName)
+  {
+    if (src == null) throw new ArgumentException("Value cannot be null.", "src");
+    if (propName == null) throw new ArgumentException("Value cannot be null.", "propName");
+
+    if (propName.Contains("."))//complex type nested
+    {
+      var temp = propName.Split(new char[] { '.' }, 2);
+      return GetPropertyValue(GetPropertyValue(src, temp[0]), temp[1]);
+    }
+    else
+    {
+      var prop = src.GetType().GetProperty(propName);
+      return prop != null ? prop.GetValue(src, null) : null;
+    }
+  }
 
   public ModelController(IModelService service)
   {
@@ -71,15 +87,34 @@ public class ModelController : ControllerBase
     try
     {
       var data = _service.GetData(model, filter.where, filter.values, filter.includes, filter.take ?? 0, filter.skip ?? 0, filter.orderBy);
-      using (var writer = new StringWriter())
-      using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
-      {
-        csv.WriteRecords(data.data);
 
-        var stream = new MemoryStream(Encoding.UTF8.GetBytes(writer.ToString() ?? ""));
-        return File(stream, "text/csv");
+      var records = new List<Dictionary<string, dynamic>>();
+
+      var writer = new StringWriter();
+      var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
+
+      foreach (var header in filter.includes!)
+      {
+        csv.WriteField(header);
       }
+      csv.NextRecord();
+
+      foreach (var row in data.data)
+      {
+        foreach (var field in filter.includes!)
+        {
+          var value = GetPropertyValue(row, field);
+          csv.WriteField(value);
+        }
+        csv.NextRecord();
+      }
+
+
+      var stream = new MemoryStream(Encoding.UTF8.GetBytes(writer.ToString() ?? ""));
+
+      return File(stream, "text/csv");
     }
+
     catch (Exception e)
     {
       Console.WriteLine(e);

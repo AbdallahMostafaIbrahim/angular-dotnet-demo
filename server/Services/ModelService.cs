@@ -100,10 +100,8 @@ namespace TodoApi.Services
           builder.Append(' ');
           Console.WriteLine(i);
 
-          // if(name.Length < i + 1){
           builder.Append(Char.ToUpper(name[i + 1]));
           i += 2;
-          // }
         }
         builder.Append(name[i]);
       }
@@ -159,7 +157,7 @@ namespace TodoApi.Services
 
       List<Navigation> navigations = new List<Navigation>();
       foreach (var navigation in model.GetNavigations())
-      { 
+      {
         var nav = new Navigation { name = navigation.Name, reference = navigation.TargetEntityType.ShortName(), type = navigation.IsCollection ? "Collection" : "Reference", foreignKey = navigation.ForeignKey.Properties.ToList()[0].Name };
         navigations.Add(nav);
       }

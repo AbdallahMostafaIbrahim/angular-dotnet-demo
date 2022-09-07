@@ -1,0 +1,13 @@
+{
+  "name": "angular-dotnet-demo",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/AbdallahMostafaIbrahim/angular-dotnet-demo.git",
+  "author": "AbdallahMostafaIbrahim <abdallahmostafaibrahim@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "generic-client",
+    "my-lib"
+  ]
+}

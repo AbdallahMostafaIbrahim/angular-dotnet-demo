@@ -60,4 +60,20 @@ export class HomeComponent implements OnInit {
     this.selectedFields = fields;
     this.refetch();
   }
+
+  exportAsCSV() {
+    console.log('nice');
+    this.service
+      .exportAsCSV({
+        includes: this.selectedFields.map((f) => f.name),
+        page: this.page,
+        sort: this.sort,
+      })
+      .subscribe((res) => {
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(res);
+        a.download = this.currentModel;
+        a.click();
+      });
+  }
 }
