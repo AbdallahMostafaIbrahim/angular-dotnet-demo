@@ -12,18 +12,11 @@
   (selectedFieldsChange)="onSelectedFieldsChange($event)"
   [data]="data"
   [page]="page"
+  (export)="exportAsCSV()"
   (pageChange)="onPageChange($event)"
   [count]="count"
   [sort]="sort"
   (sortChange)="onSortChange($event)"
 ></table-view>
 
-<button mat-icon-button [matMenuTriggerFor]="menu" aria-label="More options">
-  <mat-icon>more_vert</mat-icon>
-</button>
-<mat-menu #menu="matMenu">
-  <button (click)="exportAsCSV()" mat-menu-item [disabled]="!currentModel">
-    <mat-icon>insert_drive_file</mat-icon>
-    <span>Export As CSV</span>
-  </button>
-</mat-menu>
+<app-sidebar></app-sidebar>

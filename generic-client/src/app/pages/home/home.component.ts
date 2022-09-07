@@ -63,6 +63,7 @@ export class HomeComponent implements OnInit {
 
   exportAsCSV() {
     console.log('nice');
+    console.log(this.service);
     this.service
       .exportAsCSV({
         includes: this.selectedFields.map((f) => f.name),

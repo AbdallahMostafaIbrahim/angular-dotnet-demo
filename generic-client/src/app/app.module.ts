@@ -13,6 +13,7 @@ import { MaterialModule } from './material-module';
 import { TreeViewComponent } from './pages/home/components/tree-view/tree-view.component';
 import { ModelSelectorComponent } from './pages/home/components/model-selector/model-selector.component';
 import { ParseNamePipe } from './pages/home/utils/parseName';
+import { SidebarComponent } from './pages/home/components/sidebar/sidebar.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { ParseNamePipe } from './pages/home/utils/parseName';
     ParseNamePipe,
     TreeViewComponent,
     ModelSelectorComponent,
+    SidebarComponent,
   ],
   imports: [
     BrowserModule,

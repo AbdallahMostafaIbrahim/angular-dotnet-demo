@@ -1,86 +1,110 @@
-<mat-table
-  #table
-  [dataSource]="data"
-  matSort
-  id="table"
-  [class]="innerTable ? '' : 'mat-elevation-z4'"
-  multiTemplateDataRows
-  (matSortChange)="sortData($event)"
-  [matSortActive]="sort.active"
-  [matSortDirection]="sort.direction"
-  cdkDropList
-  cdkDropListOrientation="horizontal"
-  (cdkDropListDropped)="headerDrop($event)"
->
-  <ng-container
-    matColumnDef="{{ col.name }}"
-    *ngFor="let col of selectedReferenceFields; let colIndex = index"
+<div [class]="innerTable ? '' : 'mat-elevation-z4'">
+  <mat-table
+    #table
+    [dataSource]="data"
+    matSort
+    id="table"
+    multiTemplateDataRows
+    (matSortChange)="sortData($event)"
+    [matSortActive]="sort.active"
+    [matSortDirection]="sort.direction"
+    cdkDropList
+    cdkDropListOrientation="horizontal"
+    (cdkDropListDropped)="headerDrop($event)"
   >
-    <mat-header-cell
-      [mat-sort-header]="col.name"
-      *matHeaderCellDef
-      cdkDrag
-      cdkDragLockAxis="x"
-      cdkDragBoundary="mat-header-row"
-      >{{ col | parseName }}</mat-header-cell
+    <table></table>
+    <ng-container
+      matColumnDef="{{ col.name }}"
+      *ngFor="let col of selectedReferenceFields; let colIndex = index"
     >
-    <mat-cell *matCellDef="let element">{{
-      element | getValue: col.name
-    }}</mat-cell>
-  </ng-container>
-
-  <ng-container matColumnDef="expandedDetail">
-    <mat-cell *matCellDef="let detail" style="width: 100%; padding: 1rem 1rem">
-      <div *ngIf="detail._expanded" style="width: 100%; padding: 1rem 1rem">
-        <div *ngFor="let col of distinctCollections">
-          <h2>{{ col }}</h2>
-          <table-view
-            [innerTable]="true"
-            [data]="detail | getValue: col"
-            [selectedFields]="
-              generateFieldsForInnerTable(selectedCollectionFields)
-            "
-          ></table-view>
-        </div>
-      </div>
-    </mat-cell>
-  </ng-container>
-
-  <ng-container matColumnDef="actions">
-    <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
-    <mat-cell *matCellDef="let row">
-      <button
-        *ngIf="distinctCollections.size > 0"
-        mat-icon-button
-        aria-label="expand row"
-        (click)="toggleRow(row); $event.stopPropagation()"
+      <mat-header-cell
+        [mat-sort-header]="col.name"
+        *matHeaderCellDef
+        cdkDrag
+        cdkDragLockAxis="x"
+        cdkDragBoundary="mat-header-row"
+        >{{ col | parseName }}</mat-header-cell
       >
-        <mat-icon *ngIf="!row._expanded">keyboard_arrow_down</mat-icon>
-        <mat-icon *ngIf="row._expanded">keyboard_arrow_up</mat-icon>
+      <mat-cell *matCellDef="let element">{{
+        element | getValue: col.name
+      }}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="expandedDetail">
+      <mat-cell
+        *matCellDef="let detail"
+        style="width: 100%; padding: 1rem 1rem"
+      >
+        <div *ngIf="detail._expanded" style="width: 100%; padding: 1rem 1rem">
+          <div *ngFor="let col of distinctCollections">
+            <h2>{{ col }}</h2>
+            <table-view
+              [innerTable]="true"
+              [data]="detail | getValue: col"
+              [selectedFields]="
+                generateFieldsForInnerTable(selectedCollectionFields)
+              "
+            ></table-view>
+          </div>
+        </div>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <button
+          *ngIf="distinctCollections.size > 0"
+          mat-icon-button
+          aria-label="expand row"
+          (click)="toggleRow(row); $event.stopPropagation()"
+        >
+          <mat-icon *ngIf="!row._expanded">keyboard_arrow_down</mat-icon>
+          <mat-icon *ngIf="row._expanded">keyboard_arrow_up</mat-icon>
+        </button>
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="realColumns"></mat-header-row>
+
+    <mat-row
+      *matRowDef="let myRowData; columns: realColumns; let i = index"
+      class="element-row"
+      [class.expanded]="myRowData._expanded"
+    ></mat-row>
+
+    <mat-row
+      *matRowDef="let row; columns: ['expandedDetail']"
+      [@detailExpand]="row._expanded ? 'expanded' : 'collapsed'"
+    ></mat-row>
+  </mat-table>
+  <div class="footer">
+    <!-- Add Condition to Check if There is a collection navigation -->
+    <div>
+      <button
+        mat-icon-button
+        [matMenuTriggerFor]="menu"
+        aria-label="More options"
+      >
+        <mat-icon>more_vert</mat-icon>
       </button>
-    </mat-cell>
-  </ng-container>
 
-  <mat-header-row *matHeaderRowDef="realColumns"></mat-header-row>
+      <mat-menu #menu="matMenu">
+        <button (click)="export.next()" mat-menu-item>
+          <mat-icon>insert_drive_file</mat-icon>
+          <span>Export As CSV</span>
+        </button>
+      </mat-menu>
+    </div>
 
-  <mat-row
-    *matRowDef="let myRowData; columns: realColumns; let i = index"
-    class="element-row"
-    [class.expanded]="myRowData._expanded"
-  ></mat-row>
-
-  <mat-row
-    *matRowDef="let row; columns: ['expandedDetail']"
-    [@detailExpand]="row._expanded ? 'expanded' : 'collapsed'"
-  ></mat-row>
-</mat-table>
-
-<mat-paginator
-  *ngIf="!innerTable"
-  [length]="count"
-  [pageSize]="page.take"
-  [pageSizeOptions]="pageSizeOptions"
-  (page)="onPagination($event)"
-  aria-label="Select page"
->
-</mat-paginator>
+    <mat-paginator
+      *ngIf="!innerTable"
+      [length]="count"
+      [pageSize]="page.take"
+      [pageSizeOptions]="pageSizeOptions"
+      (page)="onPagination($event)"
+      aria-label="Select page"
+    >
+    </mat-paginator>
+  </div>
+</div>

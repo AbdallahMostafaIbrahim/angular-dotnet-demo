@@ -1,0 +1,23 @@
+<div class="sidebar-open-button" [@arrowOpenClose]="isOpen ? 'open' : 'closed'">
+  <button
+    (click)="toggle()"
+    color="white"
+    mat-mini-fab
+    aria-label="Open Sidebar"
+  >
+    <mat-icon>keyboard_arrow_left</mat-icon>
+  </button>
+</div>
+
+<div [@openClose]="isOpen ? 'open' : 'closed'" class="sidebar">
+  <button
+    (click)="toggle()"
+    color="white"
+    class="sidebar-close-button"
+    mat-mini-fab
+    aria-label="Close Sidebar"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+  <p>The box is now {{ isOpen ? "Open" : "Closed" }}!</p>
+</div>

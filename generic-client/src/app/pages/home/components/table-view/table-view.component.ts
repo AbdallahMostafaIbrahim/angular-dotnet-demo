@@ -63,6 +63,8 @@ export class TableViewComponent implements OnInit, OnChanges {
   sort: Sort = { active: '', direction: '' };
   @Output()
   sortChange = new EventEmitter<Sort>();
+  @Output()
+  export = new EventEmitter<void>();
 
   displayedColumns: string[] = ['actions'];
   realColumns: string[] = ['actions'];
